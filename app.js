@@ -45,6 +45,9 @@ function pingAllRules () {
 }
 pingAllRules();
 setInterval(() => {
+	console.log('ping - ' + _.map(relay.channels, (channel) => {
+		return channel.is_active ? '-' : ' ';
+	}).join(' '));
 	pingAllRules();
 }, 1000);
 
