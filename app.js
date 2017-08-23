@@ -16,7 +16,7 @@ console.log(`
 
 
 
-console.log('process.platform: ', process.platform);
+//console.log('process.platform: ', process.platform);
 
 
 var axios = require('axios'),
@@ -42,7 +42,7 @@ rules = _.mapValues(rules_data, (params) => {
 
 
 function pingAllRules () {
-	console.log('-----------------------------');
+	// console.log('-----------------------------');
 	_.each(rules, (rule) => {
 		rule.ping();
 	});
@@ -79,14 +79,14 @@ if ('working_hours' in rules) {
 
 console.log('Binding `led` channel to `timer` rule');
 rules.timer.on('change:is_active', (is_active) => {
-	console.log('timer: ', is_active ? 'on' : 'off');
+	//console.log('timer: ', is_active ? 'on' : 'off');
 	button_led.set(is_active);
 	relay.get('lamp').setActiveState(is_active);
 });
 
 
 relay.on('change:is_active', (index, val) => {
-	console.log('Relay state change [' + index + '] : ' + val);
+	//console.log('Relay state change [' + index + '] : ' + val);
 	fs.appendFile('./change-log.txt', '\n' + new Date().toString() + '\t' + index + '\t' + val);
 });
 
@@ -113,11 +113,5 @@ if (ping_the_start) {
 
 }
 
-
-console.log('\n\n\nRules');
-console.log(JSON.stringify(rules, null, 4));
-
-console.log('\n\n\nChannels');
-console.log(JSON.stringify(relay, null, 4));
 
 console.log('Done!');
