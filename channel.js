@@ -33,6 +33,9 @@ module.exports = class Channel extends Emitter {
 
 		if (new_val != this.is_active) {
 			this.is_active = !! val;
+
+			console.log('Channel [' + this.id + '] : ' + (this.is_active ? 'on' : 'off'));
+
 			this.io.writeSync(this.is_active ? 1 : 0);
 			this.trigger('change:is_active', this.is_active);
 			this.trigger('change:is_active:' + (this.is_active ? 'on' : 'off'));
