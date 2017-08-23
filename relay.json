@@ -1,66 +1,66 @@
-[
-	{
+{
+	"sprinkler: front": {
 		"pin": 4,
 		"label": "Sprinkler: Front"
 	},
-	{
+	"sprinkler_sidewalk": {
 		"pin": 14,
 		"label": "Sprinkler: Sidewalk"
 	},
-	{
+	"drip_front": {
 		"pin": 17,
 		"label": "Drip: Front"
 	},
-	{
+	"sprinkler_near_back": {
 		"pin": 15,
 		"label": "Sprinkler: Near Back"
 	},
-	{
+	"sprinkler_far_back": {
 		"pin": 27,
 		"label": "Sprinkler: Far Back"
 	},
-	{
+	"drip_back_1": {
 		"pin": 18,
 		"label": "Drip: Back 1"
 	},
-	{
+	"lamp": {
 		"pin": 22,
 		"label": "Lamp"
 	},
-	{
+	"drip_back_2": {
 		"pin": 23,
 		"label": "Drip: Back 2"
 	},
-	{
+	"tbd_2": {
 		"pin": 10,
 		"label": "TBD 2"
 	},
-	{
+	"tbd_3": {
 		"pin": 24,
 		"label": "TBD 3"
 	},
-	{
+	"tbd_4": {
 		"pin": 9,
 		"label": "TBD 4"
 	},
-	{
+	"tbd_5": {
 		"pin": 25,
 		"label": "TBD 5"
 	},
-	{
+	"tbd_6": {
 		"pin": 11,
 		"label": "TBD 6"
 	},
-	{
+	"tbd_7": {
 		"pin": 8,
 		"label": "TBD 7"
 	},
-	{
+	"tbd_8": {
 		"pin": 5,
 		"label": "TBD 8"
 	},
-	{
+	"tbd_9": {
 		"pin": 7,
 		"label": "TBD 9"
 	}
-]
+}

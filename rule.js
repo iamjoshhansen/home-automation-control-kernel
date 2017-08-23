@@ -1,10 +1,13 @@
 'use strict';
 
-var _ = require('lodash');
+var Emitter = require('./emitter.js'),
+	_ = require('lodash');
 
-module.exports = class Rule {
+module.exports = class Rule extends Emitter {
 
 	constructor (params) {
+
+		super();
 
 		this.title    = params.title;
 		this.start    = params.start;
@@ -13,22 +16,44 @@ module.exports = class Rule {
 		this.not      = params.not;
 		this.channels = params.channels;
 
+		var self = this,
+			is_active = false;
+
+		Object.defineProperty(this, 'is_active', {
+			enumerable: true,
+			get: () => {
+				return is_active;
+			},
+			set: (bool) => {
+				bool = !! bool;
+				if (is_active != bool) {
+					is_active = bool;
+					self.trigger('change:is_active', is_active);
+					self.trigger('change:is_active:' + (is_active ? 'true' : 'false'));
+					self.trigger(is_active ? 'activate' : 'deactivate');
+				}
+			}
+		});
+
 	}
 
-	isActive () {
+	ping () {
 		var now   = new Date();
 
 		if (this.not) {
 			var dow = ('UMTWUFS').charAt(now.getDay());
 			if (_.includes(this.not.split(''), dow)) {
-				return false;
+				this.state = false;
+				return this;
 			}
 		}
 
 		var start = new Date(this.start),
 			delta = (now - start) % duration(this.every);
 
-		return delta < duration(this.for);
+		this.state = delta < duration(this.for);
+
+		return this;
 	}
 
 };

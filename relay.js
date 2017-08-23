@@ -10,32 +10,35 @@ module.exports = class Relay extends Emitter {
 
 		super();
 
-		this.channels = [];
+		this.channels = {};
 
 		var self = this;
 
-		_.each(channels, (channel, i) => {
-			var new_channel = new Channel(channel);
-			new_channel.on('change:state', () => {
-				self.trigger('change:state', [i,new_channel.state]);
+		_.each(channels, (channel, id) => {
+			var new_channel = new Channel(id, channel);
+			new_channel.on('change:is_active', () => {
+				self.trigger('change:is_active', [id,new_channel.is_active]);
+
+				self.trigger(new_channel.is_active ? 'activate' : 'deactivate', id);
+				self.trigger(new_channel.is_active ? 'activate' : 'deactivate' + ':' + id);
 			});
-			self.channels.push(new_channel);
-		})
+			self.channels[id] = new_channel;
+		});
 
 	}
 
-	setState (index, val) {
-		this.channels[index].setState(val);
+	setActiveState (id, val) {
+		this.channels[id].setActiveState(val);
 		return this;
 	}
 
-	toggleState (index) {
-		this.channels[index].toggle();
+	toggleState (id) {
+		this.channels[id].toggle();
 		return this;
 	}
 
 	toJSON () {
-		return _.map(this.channels, (channel) => {
+		return _.mapValues(this.channels, (channel) => {
 			return channel.toJSON();
 		});
 	}
