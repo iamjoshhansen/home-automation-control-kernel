@@ -42,6 +42,7 @@ rules = _.mapValues(rules_data, (params) => {
 
 
 function pingAllRules () {
+	console.log('-----------------------------');
 	_.each(rules, (rule) => {
 		rule.ping();
 	});
@@ -80,6 +81,7 @@ console.log('Binding `led` channel to `timer` rule');
 rules.timer.on('change:is_active', (is_active) => {
 	console.log('timer: ', is_active ? 'on' : 'off');
 	button_led.set(is_active);
+	relay.get('lamp').setActiveState(is_active);
 });
 
 
