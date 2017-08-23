@@ -97,3 +97,6 @@ if (ping_the_start) {
 		});
 
 }
+
+
+console.log('Done!');
