@@ -41,6 +41,8 @@ module.exports = class Emiter {
 				cb.apply(self, args);
 			});
 		}
+
+		return this;
 	}
 
 }
