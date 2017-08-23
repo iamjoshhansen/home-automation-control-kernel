@@ -48,6 +48,7 @@ module.exports = class Channel extends Emitter {
 	followRule (rule, _inverted) {
 		var self = this;
 		rule.on('change:is_active', (is_active) => {
+			console.log('followRule triggered `' + self.id + '`:' + (is_active ? 'active' : 'inactive'));
 			if (_inverted) {
 				self.setActiveState( ! is_active);
 			} else {
