@@ -24,7 +24,7 @@ module.exports = class Channel extends Emitter {
 
 		// initializing
 		console.log('Initializing pin: ' + params.pin + ' ' + this.label);
-		this.io.writeSync(this.is_active ? 1 : 0);
+		this.io.writeSync(this.is_active ? 0 : 1);
 
 	}
 
@@ -36,7 +36,7 @@ module.exports = class Channel extends Emitter {
 
 			console.log('Channel [' + this.id + '] : ' + (this.is_active ? 'on' : 'off'));
 
-			this.io.writeSync(this.is_active ? 1 : 0);
+			this.io.writeSync(this.is_active ? 0 : 1);
 			this.trigger('change:is_active', this.is_active);
 			this.trigger('change:is_active:' + (this.is_active ? 'on' : 'off'));
 			this.trigger(this.is_active ? 'activate' : 'deactivate');
