@@ -43,7 +43,7 @@ module.exports = class Rule extends Emitter {
 		if (this.not) {
 			var dow = ('UMTWUFS').charAt(now.getDay());
 			if (_.includes(this.not.split(''), dow)) {
-				this.state = false;
+				this.is_active = false;
 				return this;
 			}
 		}
@@ -51,7 +51,7 @@ module.exports = class Rule extends Emitter {
 		var start = new Date(this.start),
 			delta = (now - start) % duration(this.every);
 
-		this.state = delta < duration(this.for);
+		this.is_active = delta < duration(this.for);
 
 		return this;
 	}

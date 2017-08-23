@@ -23,6 +23,7 @@ var axios = require('axios'),
 	Relay = require('./relay.js'),
 	Rule  = require('./rule.js'),
 
+	// Gpio  = require('./onoff-fake.js').Gpio;
 	Gpio  = require('onoff').Gpio;
 
 
@@ -45,9 +46,9 @@ function pingAllRules () {
 }
 pingAllRules();
 setInterval(() => {
-	console.log('ping - ' + _.map(relay.channels, (channel) => {
-		return channel.is_active ? '-' : ' ';
-	}).join(' '));
+	console.log('ping\t' + _.map(relay.channels, (channel) => {
+		return channel.is_active ? 'X' : '-';
+	}).join('') + '\ttimer: ' + (rules.timer.is_active ? 'on' : 'off'));
 	pingAllRules();
 }, 1000);
 

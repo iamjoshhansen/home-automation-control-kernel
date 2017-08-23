@@ -1,7 +1,8 @@
 'use strict';
 
 var Emitter = require('./emitter.js'),
-	Gpio    = require('onoff').Gpio;
+	// Gpio  = require('./onoff-fake.js').Gpio;
+	Gpio  = require('onoff').Gpio;
 
 module.exports = class Channel extends Emitter {
 
