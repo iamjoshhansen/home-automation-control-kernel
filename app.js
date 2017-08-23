@@ -28,6 +28,29 @@ var axios = require('axios'),
 	PinOutput = require('./pin-output.js');
 
 
+
+var now = new Date();
+
+console.log(
+	now.getFullYear() +
+	'-' +
+	_.padStart(now.getMonth().toString(), 2, '0') +
+	'-' +
+	_.padStart(now.getDate().toString(), 2, '0') +
+	' ' +
+	_.padStart(now.getHours().toString(), 2, '0') +
+	':' +
+	_.padStart(now.getMinutes().toString(), 2, '0') +
+	':' +
+	_.padStart(now.getSeconds().toString(), 2, '0')
+);
+
+console.log('');
+console.log('');
+console.log('');
+
+
+
 var button_led = new PinOutput(21);
 
 var relay = new Relay(require('./relay.json'));
