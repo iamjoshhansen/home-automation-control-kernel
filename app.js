@@ -61,6 +61,8 @@ if ('working_hours' in rules) {
 	relay.channels.lamp.followRule(rules.working_hours);
 }
 
+relay.channels.front.followRule(rules.timer);
+
 
 relay.channels.lamp.on('activate', () => {
 	console.log('The lamp is: ON');

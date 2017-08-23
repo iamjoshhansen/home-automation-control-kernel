@@ -18,5 +18,11 @@
 		"every"    : "1d",
 		"for"      : "15m",
 		"not"      : "SU"
+	},
+	"timer": {
+		"label"    : "Clock",
+		"start"    : "2017-08-22 7:30 AM",
+		"every"    : "2s",
+		"for"      : "1s"
 	}
 }
