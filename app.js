@@ -101,22 +101,44 @@ if ('working_hours' in rules) {
 }
 
 
+/*	Scrum Call
+------------------------------------------*/
+	if ('scrum_call' in rules) {
+		console.log('Binding `green led` to `scrum_call` rule');
+		console.log('Will ping when `scrum_call` starts');
 
-if ('scrum_call' in rules) {
-	console.log('Binding `green led` to `scrum_call` rule');
-	console.log('Will ping when `scrum_call` starts');
+		rules.scrum_call
+			.on('activate', () => {
+				ping(`Scrum Call`);
+				button_led.set(true);
+			})
+			.on('deactivate', () => {
+				button_led.set(false);
+			});
+	} else {
+		console.warn('Cannot find rule: `scrum_call`');
+	}
 
-	rules.scrum_call
-		.on('activate', () => {
-			ping(`Scrum Call`);
-			button_led.set(true);
-		})
-		.on('deactivate', () => {
-			button_led.set(false);
-		});
-} else {
-	console.warn('Cannot find rule: `scrum_call`');
-}
+
+/*	Yoga
+------------------------------------------*/
+	if ('yoga' in rules) {
+		console.log('Binding `green led` to `yoga` rule');
+		console.log('Will ping when `yoga` starts');
+
+		rules.yoga
+			.on('activate', () => {
+				ping(`Beer and Yoga!`);
+				button_led.set(true);
+			})
+			.on('deactivate', () => {
+				button_led.set(false);
+			});
+	} else {
+		console.warn('Cannot find rule: `yoga`');
+	}
+
+
 
 // console.log('Binding `led` channel to `timer` rule');
 // rules.timer.on('change:is_active', (is_active) => {

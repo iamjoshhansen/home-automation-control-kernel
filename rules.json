@@ -19,6 +19,12 @@
 		"for"      : "15m",
 		"not"      : "SU"
 	},
+	"yoga": {
+		"label"    : "Beer and Yoga",
+		"start"    : "2017-08-23 6:30 PM",
+		"every"    : "1w",
+		"for"      : "45m"
+	},
 	"timer": {
 		"label"    : "Clock",
 		"start"    : "2017-08-22 7:30 AM",
