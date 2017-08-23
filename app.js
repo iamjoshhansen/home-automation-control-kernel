@@ -76,12 +76,30 @@ if ('working_hours' in rules) {
 	console.warn('Cannot find rule: `working_hours`');
 }
 
-console.log('Binding `led` channel to `timer` rule');
-rules.timer.on('change:is_active', (is_active) => {
-	//console.log('timer: ', is_active ? 'on' : 'off');
-	button_led.set(is_active);
-	relay.get('lamp').setActiveState(is_active);
-});
+
+
+if ('scrum_call' in rules) {
+	console.log('Binding `green led` to `scrum_call` rule');
+	console.log('Will ping when `scrum_call` starts');
+
+	rules.scrum_call
+		.on('activate', () => {
+			ping(`Scrum Call`);
+			button_led.set(true);
+		})
+		.on('deactivate', () => {
+			button_led.set(false);
+		});
+} else {
+	console.warn('Cannot find rule: `scrum_call`');
+}
+
+// console.log('Binding `led` channel to `timer` rule');
+// rules.timer.on('change:is_active', (is_active) => {
+// 	//console.log('timer: ', is_active ? 'on' : 'off');
+// 	button_led.set(is_active);
+// 	relay.get('lamp').setActiveState(is_active);
+// });
 
 
 relay.on('change:is_active', (index, val) => {
