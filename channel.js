@@ -22,6 +22,9 @@ module.exports = class Channel extends Emitter {
 
 		this.io = new Gpio(params.pin, 'out');
 
+		// initializing
+		this.io.writeSync(this.is_active ? 1 : 0);
+
 	}
 
 	setActiveState (val) {
