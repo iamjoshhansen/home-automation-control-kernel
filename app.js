@@ -52,6 +52,7 @@ console.log('');
 
 
 var button_led = new PinOutput(21);
+button_led.deactivate();
 
 var relay = new Relay(require('./relay.json'));
 
