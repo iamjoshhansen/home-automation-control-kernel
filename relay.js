@@ -27,8 +27,26 @@ module.exports = class Relay extends Emitter {
 
 	}
 
+	get (id) {
+		if (id in this.channels) {
+			return this.channels[id];
+		} else {
+			return null;
+		}
+	}
+
 	setActiveState (id, val) {
 		this.channels[id].setActiveState(val);
+		return this;
+	}
+
+	activate (id) {
+		this.channels[id].setActiveState(true);
+		return this;
+	}
+
+	deactivate (id) {
+		this.channels[id].setActiveState(false);
 		return this;
 	}
 

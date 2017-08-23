@@ -1,8 +1,7 @@
 'use strict';
 
 var Emitter = require('./emitter.js'),
-	// Gpio  = require('./onoff-fake.js').Gpio;
-	Gpio  = require('onoff').Gpio;
+	PinOutput = require('./pin-output.js');
 
 module.exports = class Channel extends Emitter {
 
@@ -15,17 +14,11 @@ module.exports = class Channel extends Emitter {
 		this.label = params.label;
 		this.is_active = false;
 
-		Object.defineProperty(this, 'pin', {
-			value: params.pin,
-			enumerable: true,
-			writable: false
-		});
-
-		this.io = new Gpio(params.pin, 'out');
+		this.pin = new PinOutput(params.pin);
 
 		// initializing
 		console.log('Initializing pin: ' + params.pin + ' ' + this.label);
-		this.io.writeSync(this.is_active ? 0 : 1);
+		this.pin.set(this.is_active);
 
 	}
 
@@ -37,7 +30,7 @@ module.exports = class Channel extends Emitter {
 
 			console.log('Channel [' + this.id + '] : ' + (this.is_active ? 'on' : 'off'));
 
-			this.io.writeSync(this.is_active ? 0 : 1);
+			this.pin.set(this.is_active);
 			this.trigger('change:is_active', this.is_active);
 			this.trigger('change:is_active:' + (this.is_active ? 'on' : 'off'));
 			this.trigger(this.is_active ? 'activate' : 'deactivate');
@@ -64,7 +57,7 @@ module.exports = class Channel extends Emitter {
 
 	toJSON () {
 		return {
-			pin       : this.pin,
+			pin       : this.pin.id,
 			label     : this.label,
 			is_active : this.is_active
 		};

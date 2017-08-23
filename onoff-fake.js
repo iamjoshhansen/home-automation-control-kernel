@@ -13,6 +13,10 @@ class Gpio {
 		this.val = val;
 	}
 
+	readSync () {
+		return this.val === 0;
+	}
+
 }
 
 module.exports = {
