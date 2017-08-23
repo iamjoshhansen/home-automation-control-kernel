@@ -44,7 +44,9 @@ function pingAllRules () {
 	});
 }
 pingAllRules();
-setInterval(pingAllRules, 1000);
+setInterval(() => {
+	pingAllRules();
+}, 1000);
 
 
 
