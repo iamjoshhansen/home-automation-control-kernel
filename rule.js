@@ -56,6 +56,18 @@ module.exports = class Rule extends Emitter {
 		return this;
 	}
 
+	toJSON () {
+		return {
+			title     : this.title,
+			is_active : this.is_active,
+			start     : this.start,
+			every     : this.every,
+			for       : this.for,
+			not       : this.not,
+			channels  : this.channels
+		};
+	}
+
 };
 
 

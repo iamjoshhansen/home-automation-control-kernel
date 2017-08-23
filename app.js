@@ -107,4 +107,10 @@ if (ping_the_start) {
 }
 
 
+console.log('\n\n\nRules');
+console.log(JSON.stringify(rules, null, 4));
+
+console.log('\n\n\nChannels');
+console.log(JSON.stringify(relay, null, 4));
+
 console.log('Done!');
