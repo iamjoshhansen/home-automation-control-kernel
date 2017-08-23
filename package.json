@@ -1,0 +1,20 @@
+{
+  "name": "home-automation-control-kernel",
+  "version": "1.0.0",
+  "description": "Home Automation Control Kernel",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Sprinklers",
+    "Home",
+    "Automation"
+  ],
+  "author": "Joshua Hansen",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "lodash": "^4.17.4"
+  }
+}
