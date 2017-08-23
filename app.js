@@ -61,7 +61,8 @@ if ('working_hours' in rules) {
 	relay.channels.lamp.followRule(rules.working_hours);
 }
 
-relay.channels.front.followRule(rules.timer);
+console.log('Binding `sprinkler: front` channel to `timer` rule');
+relay.channels['sprinkler: front'].followRule(rules.timer);
 
 
 relay.channels.lamp.on('activate', () => {
