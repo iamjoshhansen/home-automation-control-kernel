@@ -17,7 +17,7 @@ module.exports = class Channel extends Emitter {
 		this.pin = new PinOutput(params.pin);
 
 		// initializing
-		console.log('Initializing pin: ' + params.pin + ' ' + this.label);
+		//console.log('Initializing pin: ' + this.pin.id + ' ' + this.label);
 		this.pin.set(this.is_active);
 
 	}
