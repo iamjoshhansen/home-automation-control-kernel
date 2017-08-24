@@ -28,22 +28,32 @@ var axios = require('axios'),
 	PinOutput = require('./pin-output.js');
 
 
+function dateString (date) {
+	return date.getFullYear() +
+		'-' +
+		_.padStart(date.getMonth().toString(), 2, '0') +
+		'-' +
+		_.padStart(date.getDate().toString(), 2, '0') +
+		' ' +
+		_.padStart(date.getHours().toString(), 2, '0') +
+		':' +
+		_.padStart(date.getMinutes().toString(), 2, '0') +
+		':' +
+		_.padStart(date.getSeconds().toString(), 2, '0')
+}
+
+
+function postMetric (data) {
+	return axios.post('http://iamjoshhansen.com/coffee-house/index.php', {
+		table: 'pi',
+		data: data
+	});
+}
+
+
 
 var now = new Date();
-
-console.log(
-	now.getFullYear() +
-	'-' +
-	_.padStart(now.getMonth().toString(), 2, '0') +
-	'-' +
-	_.padStart(now.getDate().toString(), 2, '0') +
-	' ' +
-	_.padStart(now.getHours().toString(), 2, '0') +
-	':' +
-	_.padStart(now.getMinutes().toString(), 2, '0') +
-	':' +
-	_.padStart(now.getSeconds().toString(), 2, '0')
-);
+console.log(dateString(now));
 
 console.log('');
 console.log('');
@@ -138,6 +148,29 @@ if ('working_hours' in rules) {
 		console.warn('Cannot find rule: `yoga`');
 	}
 
+
+/*	Yoga
+------------------------------------------*/
+if ('still_here' in rules) {
+	console.log('Binding `green led` to `still_here` rule');
+	console.log('Will ping when `still_here` starts');
+
+	rules.still_here
+		.on('activate', () => {
+			postMetric({
+				msg: "Still here",
+				date: dateString(new Date())
+			});
+		});
+} else {
+	console.warn('Cannot find rule: `still_here`');
+}
+
+
+postMetric({
+	msg: "App started",
+	date: dateString(new Date())
+});
 
 
 // console.log('Binding `led` channel to `timer` rule');

@@ -25,6 +25,12 @@
 		"every"    : "1w",
 		"for"      : "45m"
 	},
+	"still_here": {
+		"label"    : "Still Here!",
+		"start"    : "2017-08-23 9:00 PM",
+		"every"    : "15m",
+		"for"      : "5s"
+	},
 	"timer": {
 		"label"    : "Clock",
 		"start"    : "2017-08-22 7:30 AM",
