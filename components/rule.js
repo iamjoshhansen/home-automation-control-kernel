@@ -1,7 +1,7 @@
 'use strict';
 
 var Emitter = require('./emitter.js'),
-	_ = require('lodash');
+	_       = require('lodash');
 
 module.exports = class Rule extends Emitter {
 

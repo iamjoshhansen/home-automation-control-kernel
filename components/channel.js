@@ -1,6 +1,6 @@
 'use strict';
 
-var Emitter = require('./emitter.js'),
+var Emitter   = require('./emitter.js'),
 	PinOutput = require('./pin-output.js');
 
 module.exports = class Channel extends Emitter {

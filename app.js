@@ -22,14 +22,14 @@ var axios = require('axios'),
 	_     = require('lodash'),
 	fs    = require('fs'),
 
-	Relay = require('./relay.js'),
-	Rule  = require('./rule.js'),
+	Relay = require('./components/relay.js'),
+	Rule  = require('./components/rule.js'),
 
-	PinOutput = require('./pin-output.js'),
+	PinOutput = require('./components/pin-output.js'),
 
-	dateString = require('./date-string.js'),
+	dateString = require('./components/date-string.js'),
 
-	Metrics = require('./metrics.js'),
+	Metrics = require('./components/metrics.js'),
 	metrics = new Metrics('http://iamjoshhansen.com/coffee-house/index.php');
 
 
@@ -45,9 +45,9 @@ console.log('');
 var button_led = new PinOutput(21);
 button_led.deactivate();
 
-var relay = new Relay(require('./relay.json'));
+var relay = new Relay(require('./data/relay.json'));
 
-var rules_data = require('./rules.json'),
+var rules_data = require('./data/rules.json'),
 rules = _.mapValues(rules_data, (params) => {
 	return new Rule(params);
 });

@@ -2,7 +2,6 @@
 
 var Emitter = require('./emitter.js'),
 	Gpio    = require( (process.platform == 'darwin') ? './onoff-fake.js' : 'onoff').Gpio;
-	//Gpio    = require('onoff').Gpio;
 
 module.exports = class OutputPin {
 	constructor (number) {
