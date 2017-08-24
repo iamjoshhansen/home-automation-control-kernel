@@ -25,31 +25,12 @@ var axios = require('axios'),
 	Relay = require('./relay.js'),
 	Rule  = require('./rule.js'),
 
-	PinOutput = require('./pin-output.js');
+	PinOutput = require('./pin-output.js'),
 
+	dateString = require('./date-string.js'),
 
-function dateString (date) {
-	return date.getFullYear() +
-		'-' +
-		_.padStart(date.getMonth().toString(), 2, '0') +
-		'-' +
-		_.padStart(date.getDate().toString(), 2, '0') +
-		' ' +
-		_.padStart(date.getHours().toString(), 2, '0') +
-		':' +
-		_.padStart(date.getMinutes().toString(), 2, '0') +
-		':' +
-		_.padStart(date.getSeconds().toString(), 2, '0')
-}
-
-
-function postMetric (data) {
-	return axios.post('http://iamjoshhansen.com/coffee-house/index.php', {
-		table: 'pi',
-		data: data
-	});
-}
-
+	Metrics = require('./metrics.js'),
+	metrics = new Metrics('http://iamjoshhansen.com/coffee-house/index.php');
 
 
 var now = new Date();
@@ -157,9 +138,8 @@ if ('still_here' in rules) {
 
 	rules.still_here
 		.on('activate', () => {
-			postMetric({
-				msg: "Still here",
-				date: dateString(new Date())
+			metrics.post('still-here', {
+				date: new Date()
 			});
 		});
 } else {
@@ -167,10 +147,7 @@ if ('still_here' in rules) {
 }
 
 
-postMetric({
-	msg: "App started",
-	date: dateString(new Date())
-});
+metrics.post('started');
 
 
 // console.log('Binding `led` channel to `timer` rule');
