@@ -116,6 +116,10 @@ ready
 	.always(() => {
 		clearTimeout(si);
 		console.log('Ready is over');
+
+		console.log('rules: ', rules);
+		console.log('relay.channels: ', relay.channels);
+
 	})
 	.done(() => {
 
