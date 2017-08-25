@@ -80,6 +80,7 @@ let relay = null,
 
 	channels_dfr
 		.done((properties) => {
+			console.log('channel properties: ', properties);
 			relay = new Relay(properties);
 			console.log('Channels: ', _.keys(relay.channels).join(', '));
 		})
