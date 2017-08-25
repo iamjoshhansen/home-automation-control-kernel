@@ -106,7 +106,17 @@ let ready = new DeferredSet({
 		channels_dfr
 	});
 
+
+var si = setInterval(() => {
+	console.log('.');
+}, 100);
+
+
 ready
+	.always(() => {
+		clearTimeout(si);
+		console.log('Ready is over');
+	})
 	.done(() => {
 
 		// todo: Test this.
@@ -265,4 +275,4 @@ ready
 
 
 
-console.log('Done!');
+console.log('[ EOF ]');
