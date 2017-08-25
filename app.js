@@ -120,7 +120,7 @@ ready
 	.done(() => {
 
 		// todo: Test this.
-		relay
+		/* relay
 			.on('change:is_active', (id, is_active) => {
 				let params = {};
 				params[id] = channels_doc.properties[id];
@@ -128,7 +128,7 @@ ready
 				channels_doc
 					.set(params)
 					.save();
-			});
+			}); */
 
 		console.log('\n\n------- Ready! -------\n\n');
 
