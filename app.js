@@ -51,7 +51,6 @@ let relay = null,
 	rules = null;
 
 
-
 /*	Rules
 ------------------------------------------*/
 	let rules_dfr = new Deferred();
@@ -89,9 +88,11 @@ let relay = null,
 			console.error(er);
 		});
 
+	let channels_doc = null;
 	db.table('preferences').fetch('channels')
 		.done((doc) => {
-			channels_dfr.resolve(doc.properties);
+			channels_doc = doc;
+			channels_dfr.resolve(channels_doc.properties);
 		});
 
 
@@ -107,6 +108,17 @@ let ready = new DeferredSet({
 
 ready
 	.done(() => {
+
+		// todo: Test this.
+		relay
+			.on('change:is_active', (id, is_active) => {
+				let params = {};
+				params[id] = channels_doc.properties[id];
+				params[id].is_active = is_active;
+				channels_doc
+					.set(params)
+					.save();
+			});
 
 		console.log('\n\n------- Ready! -------\n\n');
 
@@ -189,7 +201,7 @@ ready
 			}
 
 
-		/*	Yoga
+		/*	Still Here
 		------------------------------------------*/
 		if ('still_here' in rules) {
 			console.log('Binding `green led` to `still_here` rule');
@@ -200,6 +212,8 @@ ready
 					metrics.post('still-here', {
 						date: new Date()
 					});
+
+					relay.channels.lamp.toggleActiveState();
 				});
 		} else {
 			console.warn('Cannot find rule: `still_here`');
@@ -231,6 +245,8 @@ ready
 					value1: msg
 				});
 		}
+
+		relay.channels.lamp.toggleActiveState();
 
 		var ping_the_start = false;
 
