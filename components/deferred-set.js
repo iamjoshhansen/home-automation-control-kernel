@@ -15,11 +15,16 @@ module.exports = class DeferredSet extends Deferred {
 			is_obj = ! _.isArray(dfrs);
 
 		function maybeResolve () {
+			console.log('maybe resolve...');
+
 			let resolve_count = 0;
 
-			_.each(dfrs, (dfr) => {
+			_.each(dfrs, (dfr, key) => {
 				if (dfr.state() == 'resolved') {
 					resolve_count++;
+					console.log('  x ' + key);
+				} else {
+					console.log('  - ' + key);
 				}
 			});
 
@@ -34,7 +39,10 @@ module.exports = class DeferredSet extends Deferred {
 						}
 					});
 				});
+				console.log('  resolving!');
 				self.resolve(responses);
+			} else {
+				console.log('  not resolving');
 			}
 		}
 
@@ -48,6 +56,7 @@ module.exports = class DeferredSet extends Deferred {
 					maybeResolve();
 				})
 				.fail((er) => {
+					console.log('rejecting');
 					self.reject(er);
 				});
 		});

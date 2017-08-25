@@ -3,13 +3,17 @@
 let Deferred    = require('./components/deferred.js'),
 	DeferredSet = require('./components/deferred-set.js');
 
+let a_val = 'ALPHA',
+	b_val = 'BRAVO',
+	c_val = 'CHARLIE';
+
 let a = new Deferred(),
 	b = new Deferred(),
 	c = new Deferred();
 
 let dfr_set = new DeferredSet({ a, b, c });
 
-	dfr_set
+dfr_set
 	.always((responses) => {
 		console.log('Start');
 		console.log('responses: ', responses);
@@ -40,6 +44,6 @@ setTimeout(() => {
 setTimeout(() => {
 	c.resolve('charlie');
 	console.log('-- resolved c');
-}, 1500);
+}, 200);
 
 console.log('EOF');
