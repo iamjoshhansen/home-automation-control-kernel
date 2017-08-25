@@ -157,19 +157,20 @@ ready
 		// 		ping(`It's the top the hour!`);
 		// 	});
 		// } else {
-		// 	console.warn('Cannot find rule: `hour_chime`, so no pinging for you!!');
+		// 	console.log('Cannot find rule: `hour_chime`, so no pinging for you!!');
 		// }
 
 
 		if ('working_hours' in rules) {
-			console.log('Binding `lamp` channel to `working_hours` rule');
+			console.log('Binding `lamp` channel to `working_hours` rule...');
 			relay.get('lamp').followRule(rules.working_hours);
 
 			rules.working_hours.on('deactivate', () => {
 				ping(`Time to stop working!`);
 			});
+			console.log('..done');
 		} else {
-			console.warn('Cannot find rule: `working_hours`');
+			console.log('Cannot find rule: `working_hours`');
 		}
 
 
@@ -188,7 +189,7 @@ ready
 						button_led.set(false);
 					});
 			} else {
-				console.warn('Cannot find rule: `scrum_call`');
+				console.log('Cannot find rule: `scrum_call`');
 			}
 
 
@@ -207,27 +208,27 @@ ready
 						button_led.set(false);
 					});
 			} else {
-				console.warn('Cannot find rule: `yoga`');
+				console.log('Cannot find rule: `yoga`');
 			}
 
 
 		/*	Still Here
 		------------------------------------------*/
-		if ('still_here' in rules) {
-			console.log('Binding `green led` to `still_here` rule');
-			console.log('Will ping when `still_here` starts');
+			if ('still_here' in rules) {
+				console.log('Binding `green led` to `still_here` rule');
+				console.log('Will ping when `still_here` starts');
 
-			rules.still_here
-				.on('activate', () => {
-					metrics.post('still-here', {
-						date: new Date()
+				rules.still_here
+					.on('activate', () => {
+						metrics.post('still-here', {
+							date: new Date()
+						});
+
+						relay.channels.lamp.toggleActiveState();
 					});
-
-					relay.channels.lamp.toggleActiveState();
-				});
-		} else {
-			console.warn('Cannot find rule: `still_here`');
-		}
+			} else {
+				console.log('Cannot find rule: `still_here`');
+			}
 
 
 		metrics.post('started');
@@ -241,10 +242,10 @@ ready
 		// });
 
 
-		relay.on('change:is_active', (index, val) => {
+		/* relay.on('change:is_active', (index, val) => {
 			//console.log('Relay state change [' + index + '] : ' + val);
 			fs.appendFile('./change-log.txt', '\n' + new Date().toString() + '\t' + index + '\t' + val);
-		});
+		}); */
 
 
 
@@ -270,6 +271,8 @@ ready
 				});
 
 		}
+
+		console.log('\n\n-- ready complete --');
 
 	});
 
