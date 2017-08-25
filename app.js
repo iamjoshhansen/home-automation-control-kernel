@@ -164,7 +164,9 @@ ready
 		if ('working_hours' in rules) {
 			console.log('Binding `lamp` channel to `working_hours` rule...');
 			relay.get('lamp').followRule(rules.working_hours);
+			console.log('...done');
 
+			console.log('Binding a ping to remind when to stop working.');
 			rules.working_hours.on('deactivate', () => {
 				ping(`Time to stop working!`);
 			});
