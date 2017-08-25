@@ -116,10 +116,6 @@ ready
 	.always(() => {
 		clearTimeout(si);
 		console.log('Ready is over');
-
-		console.log('rules: ', rules);
-		console.log('relay.channels: ', relay.channels);
-
 	})
 	.done(() => {
 
@@ -167,7 +163,11 @@ ready
 
 		if ('working_hours' in rules) {
 			console.log('Binding `lamp` channel to `working_hours` rule...');
-			relay.get('lamp').followRule(rules.working_hours);
+
+			let lamp = relay.get('lamp');
+			console.log('lamp: ', lamp);
+
+			lamp.followRule(rules.working_hours);
 			console.log('...done');
 
 			console.log('Binding a ping to remind when to stop working.');
