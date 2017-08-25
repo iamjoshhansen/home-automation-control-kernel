@@ -30,16 +30,16 @@ let dfr_set = new DeferredSet({ a, b, c });
 setTimeout(() => {
 	a.resolve('alpha');
 	console.log('-- resolved a');
-}, 200);
+}, 500);
 
 setTimeout(() => {
 	b.resolve('bravo');
 	console.log('-- resolved b');
-}, 400);
+}, 1000);
 
 setTimeout(() => {
 	c.resolve('charlie');
 	console.log('-- resolved c');
-}, 600);
+}, 1500);
 
 console.log('EOF');
