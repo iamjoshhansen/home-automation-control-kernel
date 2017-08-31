@@ -205,23 +205,23 @@ ready
 		// }
 
 
-		if ('working_hours' in rules) {
-			console.log('Binding `salt_lamp` channel to `working_hours` rule...');
+		// if ('working_hours' in rules) {
+		// 	console.log('Binding `salt_lamp` channel to `working_hours` rule...');
 
-			let salt_lamp = relay.get('salt_lamp');
-			//console.log('salt_lamp: ', salt_lamp);
+		// 	let salt_lamp = relay.get('salt_lamp');
+		// 	//console.log('salt_lamp: ', salt_lamp);
 
-			salt_lamp.followRule(rules.working_hours);
-			console.log('...done');
+		// 	salt_lamp.followRule(rules.working_hours);
+		// 	console.log('...done');
 
-			console.log('Binding a ping to remind when to stop working.');
-			rules.working_hours.on('deactivate', () => {
-				ping(`Time to stop working!`);
-			});
-			console.log('..done');
-		} else {
-			console.log('!!! Cannot find rule: `working_hours`');
-		}
+		// 	console.log('Binding a ping to remind when to stop working.');
+		// 	rules.working_hours.on('deactivate', () => {
+		// 		ping(`Time to stop working!`);
+		// 	});
+		// 	console.log('..done');
+		// } else {
+		// 	console.log('!!! Cannot find rule: `working_hours`');
+		// }
 
 
 		/*	Scrum Call
@@ -281,6 +281,23 @@ ready
 			}
 
 
+		/*	Sprinkler Warning
+		------------------------------------------*/
+			if ('sprinkler_warning' in rules) {
+				console.log('Will ping when `sprinkler_warning` starts');
+
+				rules.sprinkler_warning
+					.on('activate', () => {
+						ping(`Soon: Sprinklers`);
+						relay.channels.salt_lamp.setActiveState(true);
+					})
+					.on('deactivate', () => {
+						relay.channels.salt_lamp.setActiveState(false);
+					});
+			} else {
+				console.log('!!! Cannot find rule: `sprinkler_front`');
+			}
+
 		/*	Sprinkler: Front
 		------------------------------------------*/
 			if ('sprinkler_front' in rules) {
@@ -290,9 +307,11 @@ ready
 					.on('activate', () => {
 						ping(`Front Sprinklers`);
 						relay.channels.sprinkler_front.setActiveState(true);
+						relay.channels.fountain.setActiveState(true);
 					})
 					.on('deactivate', () => {
 						relay.channels.sprinkler_front.setActiveState(false);
+						relay.channels.fountain.setActiveState(false);
 					});
 			} else {
 				console.log('!!! Cannot find rule: `sprinkler_front`');
@@ -308,9 +327,11 @@ ready
 					.on('activate', () => {
 						ping(`Sidewalk Sprinklers`);
 						relay.channels.sprinkler_sidewalk.setActiveState(true);
+						relay.channels.fountain.setActiveState(true);
 					})
 					.on('deactivate', () => {
 						relay.channels.sprinkler_sidewalk.setActiveStatefalse();
+						relay.channels.fountain.setActiveState(false);
 					});
 			} else {
 				console.log('!!! Cannot find rule: `sprinkler_sidewalk`');
@@ -326,9 +347,11 @@ ready
 					.on('activate', () => {
 						ping(`Drip: Front`);
 						relay.channels.drip_front.setActiveState(true);
+						relay.channels.fountain.setActiveState(true);
 					})
 					.on('deactivate', () => {
 						relay.channels.drip_front.setActiveStatefalse();
+						relay.channels.fountain.setActiveState(false);
 					});
 			} else {
 				console.log('!!! Cannot find rule: `drip_front`');
