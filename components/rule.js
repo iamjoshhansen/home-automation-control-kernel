@@ -74,17 +74,45 @@ module.exports = class Rule extends Emitter {
 
 function duration (amount) {
 
-	var numbers = parseInt(amount.match(/\d/g).join(''), 10),
-		letters = amount.match(/\D/g).join('');
+		amount = amount.replace(/ /g,'');
 
-	return numbers * duration.map[letters];
+		var segments = [],
+			digit = '',
+			value = '',
+			mode = 'd';
 
-}
+			_.each(amount, (c) => {
+			if (('0123456789.').indexOf(c) > -1) {
+				if (mode == 'v') {
+					segments.push(digit + value);
+					digit = '';
+					value = '';
+					mode = 'd';
+				}
+				digit += c;
+			} else {
+				value += c;
+				if (mode == 'd') {
+					mode = 'v';
+				}
+			}
+		});
+		segments.push(digit + value);
 
-duration.map = {
-	'w' : 1000 * 60 * 60 * 24 * 7,
-	'd' : 1000 * 60 * 60 * 24,
-	'h' : 1000 * 60 * 60,
-	'm' : 1000 * 60,
-	's' : 1000
-};
+		return _.sum(_.map(segments, simpleDuration));
+	}
+
+	function simpleDuration (amount) {
+		var numbers = parseFloat(amount.match(/\d/g).join('')),
+			letters = amount.match(/\D/g).join('');
+
+		return numbers * duration.map[letters];
+	}
+
+	duration.map = {
+		'w' : 1000 * 60 * 60 * 24 * 7,
+		'd' : 1000 * 60 * 60 * 24,
+		'h' : 1000 * 60 * 60,
+		'm' : 1000 * 60,
+		's' : 1000
+	};
