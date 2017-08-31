@@ -6,7 +6,7 @@ var Emitter = require('./emitter.js'),
 module.exports = class OutputPin {
 	constructor (number) {
 
-		console.log('Creating PIN: ', number);
+		//console.log('Creating PIN: ', number);
 
 		var io = new Gpio(number, 'out');
 

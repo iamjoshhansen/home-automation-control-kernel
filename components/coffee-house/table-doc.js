@@ -6,7 +6,7 @@ let Deferred = require('../deferred.js'),
 
 module.exports = class TableDoc {
 
-	constructor (owner, properties, id , meta) {
+	constructor (owner, properties, id , meta, is_new) {
 
 		this.owner = owner;
 
@@ -49,10 +49,8 @@ module.exports = class TableDoc {
 
 			this.meta = meta;
 
-	}
+			this.is_new = is_new || false;
 
-	isNew () {
-		return ! this.id;
 	}
 
 	set (data) {
@@ -116,6 +114,8 @@ module.exports = class TableDoc {
 				self._server_properties = _.cloneDeep(self.properties);
 				self._changes = {};
 
+				dfr.resolve(self);
+
 			})
 			.catch((er) => {
 				dfr.reject(er);
@@ -128,10 +128,11 @@ module.exports = class TableDoc {
 		let self = this,
 			dfr = new Deferred();
 
-		if ( self.isNew() ) {
+		if ( self.is_new ) {
 			axios.post(self.owner.owner.endpoint, {
 				table : self.owner.name,
-				data  : self.properties
+				data  : self.properties,
+				id: self.id
 			})
 				.then((response) => {
 

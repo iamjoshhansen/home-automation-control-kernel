@@ -34,7 +34,9 @@ var axios = require('axios'),
 
 	Deferred    = require('./components/deferred.js'),
 	DeferredSet = require('./components/deferred-set.js'),
-	CoffeeHouse = require('./components/coffee-house/coffee-house.js');
+	CoffeeHouse = require('./components/coffee-house/coffee-house.js'),
+
+	flags = require('./flags.json');
 
 
 var now = new Date();
@@ -80,7 +82,7 @@ let relay = null,
 
 	channels_dfr
 		.done((properties) => {
-			console.log('channel properties: ', properties);
+			//console.log('channel properties: ', properties);
 			relay = new Relay(properties);
 			console.log('Channels: ', _.keys(relay.channels).join(', '));
 		})
@@ -98,6 +100,47 @@ let relay = null,
 
 
 
+
+//let preferences = db.table('preferences');
+//let the_fam = preferences.get('fam');
+
+//console.log('the_fam.is_new: ', the_fam.is_new);
+
+// let fam_dfr = the_fam.fetch()
+// 	.done((response) => {
+// 		console.log('fam fetch response: ', response.data);
+// 	})
+// 	.fail((er) => {
+// 		the_fam.set({
+// 			josh: 30,
+// 			charlie: 28
+// 		})
+// 			.save()
+// 			.done((response) => {
+// 				console.log('fam fetch 2x response: ', response.data);
+// 			})
+// 			.fail((er) => {
+// 				console.log('Nope! Second attempt failed');
+// 			});
+// 	});
+
+
+
+
+if (flags.manual_switch) {
+	let ManualSwitchEvent = require('./components/events/manual-switch-event.js');
+	let ms_ev = new ManualSwitchEvent({
+			endpoint: 'http://iamjoshhansen.com/coffee-house/',
+			table: 'preferences',
+			doc: 'manual'
+		});
+
+	ms_ev.on('change', (id, state) => {
+		console.log('change state: ', id, state);
+
+		relay[state ? 'activate' : 'deactivate']([_.keys(relay.channels)[id]]);
+	});
+}
 
 
 
@@ -158,17 +201,17 @@ ready
 		// 		ping(`It's the top the hour!`);
 		// 	});
 		// } else {
-		// 	console.log('Cannot find rule: `hour_chime`, so no pinging for you!!');
+		// 	console.log('!!! Cannot find rule: `hour_chime`, so no pinging for you!!');
 		// }
 
 
 		if ('working_hours' in rules) {
-			console.log('Binding `lamp` channel to `working_hours` rule...');
+			console.log('Binding `salt_lamp` channel to `working_hours` rule...');
 
-			let lamp = relay.get('lamp');
-			console.log('lamp: ', lamp);
+			let salt_lamp = relay.get('salt_lamp');
+			//console.log('salt_lamp: ', salt_lamp);
 
-			lamp.followRule(rules.working_hours);
+			salt_lamp.followRule(rules.working_hours);
 			console.log('...done');
 
 			console.log('Binding a ping to remind when to stop working.');
@@ -177,7 +220,7 @@ ready
 			});
 			console.log('..done');
 		} else {
-			console.log('Cannot find rule: `working_hours`');
+			console.log('!!! Cannot find rule: `working_hours`');
 		}
 
 
@@ -196,7 +239,7 @@ ready
 						button_led.set(false);
 					});
 			} else {
-				console.log('Cannot find rule: `scrum_call`');
+				console.log('!!! Cannot find rule: `scrum_call`');
 			}
 
 
@@ -215,7 +258,7 @@ ready
 						button_led.set(false);
 					});
 			} else {
-				console.log('Cannot find rule: `yoga`');
+				console.log('!!! Cannot find rule: `yoga`');
 			}
 
 
@@ -231,10 +274,64 @@ ready
 							date: new Date()
 						});
 
-						relay.channels.lamp.toggleActiveState();
+						relay.channels.led_lamp.toggleActiveState();
 					});
 			} else {
-				console.log('Cannot find rule: `still_here`');
+				console.log('!!! Cannot find rule: `still_here`');
+			}
+
+
+		/*	Sprinkler: Front
+		------------------------------------------*/
+			if ('sprinkler_front' in rules) {
+				console.log('Will ping when `sprinkler_front` starts');
+
+				rules.sprinkler_front
+					.on('activate', () => {
+						ping(`Front Sprinklers`);
+						relay.channels.sprinkler_front.setActiveState(true);
+					})
+					.on('deactivate', () => {
+						relay.channels.sprinkler_front.setActiveState(false);
+					});
+			} else {
+				console.log('!!! Cannot find rule: `sprinkler_front`');
+			}
+
+
+		/*	Sprinkler: Sidewalk
+		------------------------------------------*/
+			if ('sprinkler_sidewalk' in rules) {
+				console.log('Will ping when `sprinkler_sidewalk` starts');
+
+				rules.sprinkler_sidewalk
+					.on('activate', () => {
+						ping(`Sidewalk Sprinklers`);
+						relay.channels.sprinkler_sidewalk.setActiveState(true);
+					})
+					.on('deactivate', () => {
+						relay.channels.sprinkler_sidewalk.setActiveStatefalse();
+					});
+			} else {
+				console.log('!!! Cannot find rule: `sprinkler_sidewalk`');
+			}
+
+
+		/*	Drip: Front
+		------------------------------------------*/
+			if ('drip_front' in rules) {
+				console.log('Will ping when `drip_front` starts');
+
+				rules.drip_front
+					.on('activate', () => {
+						ping(`Drip: Front`);
+						relay.channels.drip_front.setActiveState(true);
+					})
+					.on('deactivate', () => {
+						relay.channels.drip_front.setActiveStatefalse();
+					});
+			} else {
+				console.log('!!! Cannot find rule: `drip_front`');
 			}
 
 
@@ -245,7 +342,7 @@ ready
 		// rules.timer.on('change:is_active', (is_active) => {
 		// 	//console.log('timer: ', is_active ? 'on' : 'off');
 		// 	button_led.set(is_active);
-		// 	relay.get('lamp').setActiveState(is_active);
+		// 	relay.get('led_lamp').setActiveState(is_active);
 		// });
 
 
@@ -264,7 +361,7 @@ ready
 				});
 		}
 
-		relay.channels.lamp.toggleActiveState();
+		relay.channels.led_lamp.toggleActiveState();
 
 		var ping_the_start = false;
 
@@ -281,6 +378,9 @@ ready
 
 		console.log('\n\n-- ready complete --');
 
+	})
+	.fail((er) => {
+		console.log('Ready failed');
 	});
 
 

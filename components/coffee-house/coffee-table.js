@@ -36,11 +36,11 @@ module.exports = class CoffeeTable {
 				//console.log('response: ', response);
 
 				if (_id) {
-					let doc = self.create(response.data.props, _id, response.data.meta);
+					let doc = self.create(response.data.props, _id, response.data.meta, false);
 					dfr.resolve(doc);
 				} else {
 					_.each(response.data, (data, id) => {
-						self.create(data.props, id, data.meta);
+						self.create(data.props, id, data.meta, false);
 					});
 
 					dfr.resolve(self.docs);
@@ -54,8 +54,17 @@ module.exports = class CoffeeTable {
 		return dfr;
 	}
 
-	create (properties, id , meta) {
-		let doc = new TableDoc(this, properties, id , meta);
+	// get (id) {
+	// 	if (id in this.docs) {
+	// 		return this.docs[id];
+	// 	} else {
+	// 		let doc = this.create(null, id, null, true);
+	// 		return doc;
+	// 	}
+	// }
+
+	create (properties, id , meta, is_new) {
+		let doc = new TableDoc(this, properties, id , meta, is_new);
 		this.docs.push(doc);
 		return doc;
 	}
@@ -63,7 +72,7 @@ module.exports = class CoffeeTable {
 	post (properties, _id) {
 		let self = this,
 			dfr = new Deferred(),
-			doc = new TableDoc(self, properties);
+			doc = new TableDoc(self, properties, _id, null, true);
 
 		doc.save()
 			.done(function () {
