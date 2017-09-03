@@ -60,6 +60,10 @@ console.log('Outs\n - ' + _.map(outs.outs, (out, id) => {
 }).join('\n - '));
 
 
+_.each(outs.outs, (out) => {
+	out.deactivate();
+});
+
 
 setTimeout(() => {
 	setInterval(() => {

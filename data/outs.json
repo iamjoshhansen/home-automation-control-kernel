@@ -31,8 +31,8 @@
 		"label": "Drip: Back 2",
 		"pin": 23
 	},
-	"led_lamp": {
-		"label": "LED Lamp",
+	"tbd_4": {
+		"label": "TBD 4",
 		"pin": 10
 	},
 	"salt_lamp": {
@@ -43,8 +43,8 @@
 		"label": "Fountain",
 		"pin": 9
 	},
-	"tbd_4": {
-		"label": "TBD 4",
+	"led_lamp": {
+		"label": "LED Lamp",
 		"pin": 25
 	},
 	"tbd_5": {
