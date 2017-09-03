@@ -8,26 +8,19 @@ module.exports = class OutputPin {
 
 		//console.log('Creating PIN: ', number);
 
-		var io = new Gpio(number, 'out');
-
-		Object.defineProperty(this, 'io', {
-			value: io
-		});
-
-		Object.defineProperty(this, 'id', {
-			value: number
-		});
-
-		Object.defineProperty(this, 'state', {
-			get: () => {
-				return io.readSync() === 0;
-			}
-		});
-
+		this.io = new Gpio(number, 'out');
+		this.id = number;
+		this.is_active = this.io.readSync() === 0;
 	}
 
 	set (bool) {
+		bool = !! bool;
 		this.io.writeSync(bool ? 0 : 1);
+		this.is_active = bool;
+	}
+
+	get () {
+		return this.is_active;
 	}
 
 	activate () {
@@ -36,5 +29,9 @@ module.exports = class OutputPin {
 
 	deactivate () {
 		return this.set(false);
+	}
+
+	toggle () {
+		this.set( ! this.get());
 	}
 }

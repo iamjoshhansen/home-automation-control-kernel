@@ -16,11 +16,10 @@ module.exports = class Relay extends Emitter {
 
 		_.each(channels, (channel, id) => {
 			var new_channel = new Channel(id, channel);
-			new_channel.on('change:is_active', () => {
-				self.trigger('change:is_active', [id,new_channel.is_active]);
-
-				self.trigger(new_channel.is_active ? 'activate' : 'deactivate', id);
-				self.trigger(new_channel.is_active ? 'activate' : 'deactivate' + ':' + id);
+			new_channel.on('change', () => {
+				self.trigger('change', [id, new_channel.is_active]);
+				self.trigger(new_channel.is_active ? 'activate' : 'deactivate', [id, new_channel.is_active]);
+				self.trigger((new_channel.is_active ? 'activate' : 'deactivate') + ':' + id, new_channel.is_active);
 			});
 			self.channels[id] = new_channel;
 		});

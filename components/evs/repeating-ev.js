@@ -1,9 +1,9 @@
 'use strict';
 
-let Event = require('./event.js'),
-	_     = require('lodash');
+let Ev = require('./ev.js'),
+	_  = require('lodash');
 
-module.exports = class RepeatingEvent extends Event {
+module.exports = class RepeatingEv extends Ev {
 
 	constructor (params) {
 
@@ -69,6 +69,10 @@ module.exports = class RepeatingEvent extends Event {
 			for       : this.for,
 			not       : this.not
 		});
+	}
+
+	nextThreeTimes () {
+		return [];
 	}
 }
 

@@ -1,11 +1,11 @@
 'use strict';
 
-let Event       = require('./event.js'),
+let Ev          = require('./ev.js'),
 	Deferred    = require('../deferred.js'),
 	CoffeeHouse = require('../../components/coffee-house/coffee-house.js'),
 	_           = require('lodash');
 
-module.exports = class ManualSwitchEvent extends Event {
+module.exports = class ManualSwitchEv extends Ev {
 
 	constructor (params) {
 
@@ -21,7 +21,7 @@ module.exports = class ManualSwitchEvent extends Event {
 
 		self.switches = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
 		_.each(self.switches, (sw, i) => {
-			var ev = new Event({
+			var ev = new Ev({
 				title: i+'',
 				state: false
 			});

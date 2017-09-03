@@ -3,13 +3,13 @@
 var Emitter = require('../emitter.js'),
 	_       = require('lodash');
 
-module.exports = class Event extends Emitter {
+class Ev extends Emitter {
 
 	constructor (params) {
 
 		super();
 
-		this.title    = params.title;
+		this.label    = params.label;
 
 		var self = this,
 			state = false;
@@ -31,8 +31,14 @@ module.exports = class Event extends Emitter {
 
 	toJSON () {
 		return {
-			title : this.title,
+			label : this.label,
 			state : this.state
 		};
 	}
 }
+
+module.exports = Ev;
+
+Ev.Repeating = require('./repeating-ev.js');
+
+

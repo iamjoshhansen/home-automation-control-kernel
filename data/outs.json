@@ -1,0 +1,70 @@
+{
+	"sprinkler_front_near": {
+		"label": "Sprinkler: Front",
+		"pin": 4
+	},
+	"sprinkler_front_far": {
+		"label": "Sprinkler: Sidewalk",
+		"pin": 14
+	},
+	"drip_front": {
+		"label": "Drip: Front",
+		"pin": 17
+	},
+	"sprinkler_back_near": {
+		"label": "Sprinkler: Near Back",
+		"pin": 15
+	},
+	"sprinkler_back_far": {
+		"label": "Sprinkler: Far Back",
+		"pin": 27
+	},
+	"drip_back_1": {
+		"label": "Drip: Back 1",
+		"pin": 18
+	},
+	"drip_back_2": {
+		"label": "Drip: Back 2",
+		"pin": 22
+	},
+	"drip_back_3": {
+		"label": "Drip: Back 2",
+		"pin": 23
+	},
+	"led_lamp": {
+		"label": "LED Lamp",
+		"pin": 10
+	},
+	"salt_lamp": {
+		"label": "Salt Lamp",
+		"pin": 24
+	},
+	"fountain": {
+		"label": "Fountain",
+		"pin": 9
+	},
+	"tbd_4": {
+		"label": "TBD 4",
+		"pin": 25
+	},
+	"tbd_5": {
+		"label": "TBD 5",
+		"pin": 11
+	},
+	"tbd_6": {
+		"label": "TBD 6",
+		"pin": 8
+	},
+	"tbd_7": {
+		"label": "TBD 7",
+		"pin": 5
+	},
+	"tbd_8": {
+		"label": "TBD 8",
+		"pin": 7
+	},
+	"green_led": {
+		"label": "Green Circle LED",
+		"pin": 21
+	}
+}

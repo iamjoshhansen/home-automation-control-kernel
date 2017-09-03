@@ -27,12 +27,8 @@ module.exports = class Channel extends Emitter {
 
 		if (new_val != this.is_active) {
 			this.is_active = !! val;
-
-			// console.log('Channel [' + this.id + '] : ' + (this.is_active ? 'on' : 'off'));
-
 			this.pin.set(this.is_active);
-			this.trigger('change:is_active', this.is_active);
-			this.trigger('change:is_active:' + (this.is_active ? 'on' : 'off'));
+			this.trigger('change', this.is_active);
 			this.trigger(this.is_active ? 'activate' : 'deactivate');
 		}
 
@@ -41,8 +37,8 @@ module.exports = class Channel extends Emitter {
 
 	followRule (rule, _inverted) {
 		var self = this;
-		rule.on('change:is_active', (is_active) => {
-			console.log('followRule triggered `' + self.id + '`:' + (is_active ? 'active' : 'inactive'));
+		rule.on('change', (is_active) => {
+			//console.log('followRule triggered `' + self.id + '`:' + (is_active ? 'active' : 'inactive'));
 			if (_inverted) {
 				self.setActiveState( ! is_active);
 			} else {
@@ -51,7 +47,7 @@ module.exports = class Channel extends Emitter {
 		});
 	}
 
-	toggleActiveState () {
+	toggle () {
 		return this.setActiveState( ! this.is_active);
 	}
 
