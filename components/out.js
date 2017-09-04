@@ -6,13 +6,14 @@ var Emitter   = require('./emitter.js'),
 
 module.exports = class Out extends Emitter {
 
-	constructor (params) {
+	constructor (id, params) {
 
 		super();
 
 		let self = this;
+		this.id    = id;
 		this.label = params.label;
-		this.pin = new OutputPin(params.pin);
+		this.pin   = new OutputPin(params.pin);
 	}
 
 	set (bool) {
@@ -44,6 +45,7 @@ module.exports = class Out extends Emitter {
 
 	toJSON () {
 		return {
+			id        : this.id,
 			label     : this.label,
 			pin       : this.pin.id,
 			is_active : this.pin.is_active

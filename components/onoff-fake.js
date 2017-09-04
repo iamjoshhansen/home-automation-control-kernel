@@ -11,6 +11,7 @@ class Gpio {
 
 	writeSync (val) {
 		this.val = val;
+		console.log('fake gpio -- setting `' + this.pin + '` to ' + (val ? 'off' : 'on'));
 	}
 
 	readSync () {

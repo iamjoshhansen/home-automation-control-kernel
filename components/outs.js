@@ -14,7 +14,13 @@ module.exports = class Outs extends Emitter {
 		this.outs = {};
 
 		_.each(params, (obj, id) => {
-			self.outs[id] = new Out(obj);
+			var out = new Out(id, obj);
+			out.on('change', (is_active) => {
+				self.trigger('change', [id, is_active]);
+				self.trigger('change:'+id, is_active);
+			});
+
+			self.outs[id] = out;
 		});
 
 	}

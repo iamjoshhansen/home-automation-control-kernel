@@ -29,7 +29,9 @@ var axios = require('axios'),
 	Metrics = require('./components/metrics.js'),
 	metrics = new Metrics('http://iamjoshhansen.com/coffee-house/index.php'),
 
-	Deferred    = require('./components/deferred.js');
+	Deferred    = require('./components/deferred.js'),
+
+	RemoteState = require('./components/remote-state.js');
 
 
 var now = new Date();
@@ -49,39 +51,76 @@ console.log('\n\n\n');
 
 
 
-let outs = new Outs(require('./data/outs.json'));
+/*	Declare Outs
+------------------------------------------*/
+	let outs = new Outs(require('./data/outs.json'));
 
-let max_id_lenth = _.max(_.map(outs.outs, (out, id) => {
-	return id.length;
-}));
+	let max_id_lenth = _.max(_.map(outs.outs, (out, id) => {
+		return id.length;
+	}));
 
-console.log('Outs\n - ' + _.map(outs.outs, (out, id) => {
-	return out.pin.id + '\t' + _.padEnd(id, max_id_lenth) + '\t' + out.label;
-}).join('\n - '));
+	console.log('Outs\n - ' + _.map(outs.outs, (out, id) => {
+		return out.pin.id + '\t' + _.padEnd(id, max_id_lenth) + '\t' + out.label;
+	}).join('\n - '));
+
+	/*	Reset
+	-------------------------------------*/
+		_.each(outs.outs, (out) => {
+			out.deactivate();
+		});
 
 
-_.each(outs.outs, (out) => {
-	out.deactivate();
+	/*	Write initial files
+	------------------------------------------*/
+		/* _.each(outs.outs, (out, id) => {
+			fs.writeFileSync(`./php/data/${id}.json`, JSON.stringify({
+				is_active: false,
+				label: out.label
+			}, null, 4));
+		}); */
+
+
+/*	Remove State
+------------------------------------------*/
+	let remote_state = new RemoteState('http://iamjoshhansen.com/home-automation-control-kernel/db/', 1000);
+
+	remote_state.on('change', (id, is_active) => {
+		console.log('remote change: `' + id + '` to `' + is_active + '`');
+		outs.get(id).set(is_active);
+	});
+
+
+outs.on('change', (id, state) => {
+	console.log(`${id} is now ` + (state ? 'on' : 'off'));
 });
 
 
-setTimeout(() => {
-	setInterval(() => {
-		outs.get('led_lamp').toggle();
-	}, 3000);
-}, 0);
+let duration = require('./components/duration.js');
+
+
+outs.get('sprinkler_front_near').activate();
 
 setTimeout(() => {
-	setInterval(() => {
-		outs.get('salt_lamp').toggle();
-	}, 3000);
-}, 1000);
+	outs.get('sprinkler_front_near').deactivate();
+}, duration('14m55s'));
 
 setTimeout(() => {
-	setInterval(() => {
-		outs.get('fountain').toggle();
-	}, 3000);
-}, 2000);
+	outs.get('sprinkler_front_far').activate();
+}, duration('15m'));
+
+setTimeout(() => {
+	outs.get('sprinkler_front_far').deactivate();
+}, duration('29m55s'));
+
+setTimeout(() => {
+	outs.get('drip_front').activate();
+}, duration('30m'));
+
+setTimeout(() => {
+	outs.get('drip_front').deactivate();
+}, duration('45m'));
+
+
 
 
 
