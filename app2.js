@@ -109,23 +109,23 @@ outs.get('sprinkler_front_near').activate();
 
 setTimeout(() => {
 	outs.get('sprinkler_front_near').deactivate();
-}, duration('14m55s'));
+}, duration('9m55s'));
 
 setTimeout(() => {
 	outs.get('sprinkler_front_far').activate();
-}, duration('15m'));
+}, duration('10m'));
 
 setTimeout(() => {
 	outs.get('sprinkler_front_far').deactivate();
-}, duration('29m55s'));
+}, duration('19m55s'));
 
 setTimeout(() => {
 	outs.get('drip_front').activate();
-}, duration('30m'));
+}, duration('20m'));
 
 setTimeout(() => {
 	outs.get('drip_front').deactivate();
-}, duration('45m'));
+}, duration('30m'));
 
 
 
