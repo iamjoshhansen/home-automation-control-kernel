@@ -40,6 +40,13 @@ console.log(dateString(now));
 console.log('\n\n\n');
 
 
+function ping (msg) {
+	console.log('PING: ', msg);
+	return axios.post('https://maker.ifttt.com/trigger/reminder/with/key/f3HqyRey51BeJWWjrq4I-AP9hy_IosZZ3IZfDR5lGya', {
+			value1: msg
+		});
+}
+
 
 /*	Evs
 ------------------------------------------*/
@@ -91,7 +98,7 @@ console.log('\n\n\n');
 
 
 outs.on('change', (id, state) => {
-	console.log(`${id} is now ` + (state ? 'on' : 'off'));
+	ping(`${id} is now ` + (state ? 'on' : 'off'));
 });
 
 
