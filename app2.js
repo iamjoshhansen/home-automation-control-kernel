@@ -97,8 +97,10 @@ function ping (msg) {
 	});
 
 
-outs.on('change', (id, state) => {
-	ping(`${id} is now ` + (state ? 'on' : 'off'));
+outs.on('change', (id, is_on) => {
+	let label = outs.get(id).label;
+	let state = is_on ? 'On' : 'Off';
+	ping(`${state}: ${label}`);
 });
 
 
