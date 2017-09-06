@@ -105,7 +105,7 @@ outs.on('change', (id, state) => {
 let duration = require('./components/duration.js');
 
 
-outs.get('sprinkler_front_near').activate();
+/* outs.get('sprinkler_front_near').activate();
 
 setTimeout(() => {
 	outs.get('sprinkler_front_near').deactivate();
@@ -125,7 +125,7 @@ setTimeout(() => {
 
 setTimeout(() => {
 	outs.get('drip_front').deactivate();
-}, duration('30m'));
+}, duration('30m')); */
 
 
 
