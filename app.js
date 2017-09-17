@@ -116,33 +116,36 @@ console.log('\n\n\n');
 const backyard_sequence = '15m:sprinkler_back_near 5s 15m:sprinkler_back_far';
 const backyard_frequency = '1d';
 
-const frontyard_sequence = '15s:sprinkler_front_near 5s 15s:sprinkler_front_far';
-const frontyard_frequency = '3d';
-
 const sequences = [
 		{
 			label: 'Back Yard (morning)',
-			start: '2017-09-17 5:00 AM',
+			start: '2017-09-19 5:00 AM',
 			frequency: backyard_frequency,
 			sequence: backyard_sequence,
 		},
 		{
 			label: 'Back Yard (lunch)',
-			start: '2017-09-17 12:00 PM',
+			start: '2017-09-19 11:00 AM',
 			frequency: backyard_frequency,
 			sequence: backyard_sequence,
 		},
 		{
 			label: 'Back Yard (evening)',
-			start: '2017-09-17 4:40 PM',
+			start: '2017-09-19 4:00 PM',
 			frequency: backyard_frequency,
 			sequence: backyard_sequence,
 		},
 		{
 			label: 'Front Yard',
-			start: '2017-09-17 5:15 PM',
-			frequency: frontyard_frequency,
-			sequence: frontyard_sequence
+			start: '2017-09-18 5:00 AM',
+			frequency: '3d',
+			sequence: '15m:sprinkler_front_near 5s 15m:sprinkler_front_far'
+		},
+		{
+			label: 'Front Drip',
+			start: '2017-09-17 6:00 AM',
+			frequency: '1d',
+			sequence: '10m:drip_front'
 		}
 	];
 
