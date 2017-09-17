@@ -1,8 +1,8 @@
 'use strict';
 
-let Ev          = require('./ev.js'),
-	Deferred    = require('../deferred.js'),
-	CoffeeHouse = require('../../components/coffee-house/coffee-house.js'),
+let Ev          = require('./ev'),
+	Deferred    = require('../deferred'),
+	CoffeeHouse = require('../../components/coffee-house/coffee-house'),
 	_           = require('lodash');
 
 module.exports = class ManualSwitchEv extends Ev {
@@ -13,13 +13,14 @@ module.exports = class ManualSwitchEv extends Ev {
 
 		let self = this;
 
-		self.interval = null;
+		this.interval = null;
 
 		let db = new CoffeeHouse(params.endpoint);
-		self.table = db.table(params.table);
-		self.doc = params.doc;
+		this.table = db.table(params.table);
+		this.doc = params.doc;
 
-		self.switches = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+		this.switches = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+
 		_.each(self.switches, (sw, i) => {
 			var ev = new Ev({
 				title: i+'',
@@ -92,49 +93,3 @@ module.exports = class ManualSwitchEv extends Ev {
 		});
 	}
 }
-
-
-function duration (amount) {
-
-	amount = amount.replace(/ /g,'');
-
-	var segments = [],
-		digit = '',
-		value = '',
-		mode = 'd';
-
-		_.each(amount, (c) => {
-		if (('0123456789.').indexOf(c) > -1) {
-			if (mode == 'v') {
-				segments.push(digit + value);
-				digit = '';
-				value = '';
-				mode = 'd';
-			}
-			digit += c;
-		} else {
-			value += c;
-			if (mode == 'd') {
-				mode = 'v';
-			}
-		}
-	});
-	segments.push(digit + value);
-
-	return _.sum(_.map(segments, simpleDuration));
-}
-
-function simpleDuration (amount) {
-	var numbers = parseFloat(amount.match(/\d/g).join('')),
-		letters = amount.match(/\D/g).join('');
-
-	return numbers * duration.map[letters];
-}
-
-duration.map = {
-	'w' : 1000 * 60 * 60 * 24 * 7,
-	'd' : 1000 * 60 * 60 * 24,
-	'h' : 1000 * 60 * 60,
-	'm' : 1000 * 60,
-	's' : 1000
-};

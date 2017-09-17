@@ -1,6 +1,7 @@
 'use strict';
 
 let Ev = require('./ev.js'),
+	duration = require('../duration'),
 	_  = require('lodash');
 
 module.exports = class RepeatingEv extends Ev {
@@ -9,24 +10,23 @@ module.exports = class RepeatingEv extends Ev {
 
 		super(params);
 
-		this.start    = params.start;
-		this.end      = params.end;
-		this.every    = params.every;
-		this.for      = params.for;
-		this.not      = params.not;
+		this.start     = params.start;
+		this.frequency = params.frequency;
+		this.duration  = params.duration;
+		this.end       = params.end || null;
+		this.exception = params.exception || null;
 
 		this.interval = null;
 
 		this.activate();
-
 	}
 
-	ping () {
+	_ping () {
 		var now   = new Date();
 
-		if (this.not) {
+		if (this.exception) {
 			var dow = ('UMTWUFS').charAt(now.getDay());
-			if (_.includes(this.not.split(''), dow)) {
+			if (_.includes(this.exception.split(''), dow)) {
 				this.state = false;
 				return this;
 			}
@@ -41,18 +41,18 @@ module.exports = class RepeatingEv extends Ev {
 		}
 
 		var start = new Date(this.start),
-			delta = (now - start) % duration(this.every);
+			delta = (now.getTime() - start.getTime()) % duration(this.frequency);
 
-		this.state = delta < duration(this.for);
+		this.state = delta < duration(this.duration);
 	}
 
 	activate () {
 
 		var self = this;
 
-		this.ping();
+		this._ping();
 		this.interval = setInterval(() => {
-			self.ping();
+			self._ping();
 		}, 100);
 
 		return self;
@@ -65,59 +65,10 @@ module.exports = class RepeatingEv extends Ev {
 	toJSON () {
 		return _.extend(super.toJSON(), {
 			start     : this.start,
-			every     : this.every,
-			for       : this.for,
-			not       : this.not
+			end       : this.end,
+			frequency : this.frequency,
+			duration  : this.duration,
+			exception : this.exception
 		});
 	}
-
-	nextThreeTimes () {
-		return [];
-	}
 }
-
-
-function duration (amount) {
-
-	amount = amount.replace(/ /g,'');
-
-	var segments = [],
-		digit = '',
-		value = '',
-		mode = 'd';
-
-		_.each(amount, (c) => {
-		if (('0123456789.').indexOf(c) > -1) {
-			if (mode == 'v') {
-				segments.push(digit + value);
-				digit = '';
-				value = '';
-				mode = 'd';
-			}
-			digit += c;
-		} else {
-			value += c;
-			if (mode == 'd') {
-				mode = 'v';
-			}
-		}
-	});
-	segments.push(digit + value);
-
-	return _.sum(_.map(segments, simpleDuration));
-}
-
-function simpleDuration (amount) {
-	var numbers = parseFloat(amount.match(/\d/g).join('')),
-		letters = amount.match(/\D/g).join('');
-
-	return numbers * duration.map[letters];
-}
-
-duration.map = {
-	'w' : 1000 * 60 * 60 * 24 * 7,
-	'd' : 1000 * 60 * 60 * 24,
-	'h' : 1000 * 60 * 60,
-	'm' : 1000 * 60,
-	's' : 1000
-};

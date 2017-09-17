@@ -1,8 +1,9 @@
 'use strict';
 
-var Emitter = require('./emitter.js'),
-	_       = require('lodash'),
-	axios   = require('axios');
+var Emitter = require('./emitter'),
+	_ = require('lodash'),
+	axios = require('axios'),
+	dateString = require('./date-string');
 
 
 module.exports = class RemoteState extends Emitter {
@@ -26,7 +27,8 @@ module.exports = class RemoteState extends Emitter {
 
 	fetch () {
 
-		let self = this;
+		const self = this;
+		const start_time = new Date().getTime();
 
 		return axios.get(this.endpoint)
 			.then((response) => {
@@ -44,14 +46,13 @@ module.exports = class RemoteState extends Emitter {
 					}
 				});
 
-				// console.log(_.map(response.data, (item) => {
-				// 	return item.is_active ? 'Y' : '-';
-				// }).join(' '));
+				const delta = new Date().getTime() - start_time;
+				self.trigger('fetch-duration', delta);
 
 			})
 			.catch((er) => {
-				console.log('RemoteState fetch failed');
-				console.log(er);
+				console.log('RemoteState fetch failed. ', dateString('Y-m-d H:i:s'));
+				//console.log(er);
 			});
 	}
 

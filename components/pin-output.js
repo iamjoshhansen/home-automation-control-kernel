@@ -15,7 +15,7 @@ module.exports = class OutputPin {
 
 	set (bool) {
 		bool = !! bool;
-		this.io.writeSync(bool ? 0 : 1);
+		this.io.write(bool ? 0 : 1);
 		this.is_active = bool;
 	}
 

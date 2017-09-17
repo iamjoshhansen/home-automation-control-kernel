@@ -1,7 +1,6 @@
 'use strict';
 
-var Emitter = require('../emitter.js'),
-	_       = require('lodash');
+var Emitter = require('../emitter.js');
 
 class Ev extends Emitter {
 
@@ -9,10 +8,10 @@ class Ev extends Emitter {
 
 		super();
 
-		this.label    = params.label;
+		const self = this;
 
-		var self = this,
-			state = false;
+		this.label = params.label;
+		let state = false;
 
 		Object.defineProperty(this, 'state', {
 			enumerable: true,
@@ -21,8 +20,9 @@ class Ev extends Emitter {
 			},
 			set: (val) => {
 				if (state != val) {
+					let old_state = state;
 					state = val;
-					self.trigger('change', state);
+					self.trigger('change', [state, old_state]);
 				}
 			}
 		});
