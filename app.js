@@ -92,11 +92,11 @@ console.log('\n\n\n');
 
 /*	Set up notifications for all switches
 ------------------------------------------*/
-	outs.on('change', (id, is_on) => {
-		let label = outs.get(id).label;
-		let state = is_on ? 'On' : 'Off';
-		ping(`${state}: ${label}`);
-	});
+	// outs.on('change', (id, is_on) => {
+	// 	let label = outs.get(id).label;
+	// 	let state = is_on ? 'On' : 'Off';
+	// 	ping(`${state}: ${label}`);
+	// });
 
 
 
@@ -113,21 +113,50 @@ console.log('\n\n\n');
 	// });
 
 
-/*	Repeating Sequence
-------------------------------------------*/
-	const repeating_sequence = new RepeatingSequence({
-		start: new Date(new Date().getTime() + duration('10s')),
-		frequency: '1d',
-		sequence: '10s:sprinkler_back_near 5s 10s:sprinkler_back_far',
+const backyard_sequence = '15m:sprinkler_back_near 5s 15m:sprinkler_back_far';
+const backyard_frequency = '1d';
+
+const frontyard_sequence = '15s:sprinkler_front_near 5s 15s:sprinkler_front_far';
+const frontyard_frequency = '3d';
+
+const sequences = [
+		{
+			label: 'Back Yard (morning)',
+			start: '2017-09-17 5:00 AM',
+			frequency: backyard_frequency,
+			sequence: backyard_sequence,
+		},
+		{
+			label: 'Back Yard (lunch)',
+			start: '2017-09-17 12:00 PM',
+			frequency: backyard_frequency,
+			sequence: backyard_sequence,
+		},
+		{
+			label: 'Back Yard (evening)',
+			start: '2017-09-17 4:40 PM',
+			frequency: backyard_frequency,
+			sequence: backyard_sequence,
+		},
+		{
+			label: 'Front Yard',
+			start: '2017-09-17 5:15 PM',
+			frequency: frontyard_frequency,
+			sequence: frontyard_sequence
+		}
+	];
+
+
+function bindSequenceToOuts (sequence) {
+	sequence.on('activate', () => {
+		ping(`Sequence: ${sequence.label}`);
 	});
 
-	console.log(`repeating_sequence initial state: ${repeating_sequence.state}`);
-	if (repeating_sequence.state) {
-		outs.get(repeating_sequence.state).set(true);
+	if (sequence.state) {
+		outs.get(sequence.state).set(true);
 	}
 
-	repeating_sequence.on('change', (state, old_state) => {
-		console.log(`repeating_sequence: ${old_state} -> ${state}`);
+	sequence.on('change', (state, old_state) => {
 		if (old_state) {
 			outs.get(old_state).set(false);
 		}
@@ -136,6 +165,39 @@ console.log('\n\n\n');
 			outs.get(state).set(true);
 		}
 	});
+
+	sequence.activate();
+}
+
+
+_.each(sequences, (sequence) => {
+	bindSequenceToOuts(new RepeatingSequence(sequence));
+});
+
+
+/*	Repeating Sequence
+------------------------------------------*/
+	// const repeating_sequence = new RepeatingSequence({
+	// 	start: new Date(new Date().getTime() + duration('10s')),
+	// 	frequency: '1d',
+	// 	sequence: '10s:sprinkler_back_near 5s 10s:sprinkler_back_far',
+	// });
+
+	// console.log(`repeating_sequence initial state: ${repeating_sequence.state}`);
+	// if (repeating_sequence.state) {
+	// 	outs.get(repeating_sequence.state).set(true);
+	// }
+
+	// repeating_sequence.on('change', (state, old_state) => {
+	// 	console.log(`repeating_sequence: ${old_state} -> ${state}`);
+	// 	if (old_state) {
+	// 		outs.get(old_state).set(false);
+	// 	}
+
+	// 	if (state) {
+	// 		outs.get(state).set(true);
+	// 	}
+	// });
 
 
 /*

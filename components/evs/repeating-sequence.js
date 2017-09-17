@@ -18,7 +18,24 @@ module.exports = class RepeatingSequence extends Ev {
 
 		this.interval = null;
 
-		this.activate();
+		let is_active = false;
+
+		Object.defineProperty(this, 'is_active', {
+			enumerable: true,
+			get: () => {
+				return is_active;
+			},
+			set: (val) => {
+				if (is_active != val) {
+					let old_is_active = is_active;
+					is_active = val;
+					this.trigger('change:is_active', is_active);
+					this.trigger(is_active ? 'activate' : 'deactivate');
+				}
+			}
+		});
+
+		//this.activate();
 	}
 
 	_ping () {
@@ -49,8 +66,8 @@ module.exports = class RepeatingSequence extends Ev {
 		//console.log('time_since_start: ', time_since_start);
 
 		if (time_since_start < 0 || time_since_start > total_duration) {
+			this.is_active = false;
 			this.state = false;
-			//console.log('- ', this.state);
 		} else {
 
 			let cursor = -1;
@@ -62,8 +79,8 @@ module.exports = class RepeatingSequence extends Ev {
 				}
 			}
 
+			this.is_active = true;
 			this.state = ('state' in this.sequence[cursor]) ? this.sequence[cursor].state : true;
-			//console.log('x ', cursor, this.state);
 		}
 	}
 
