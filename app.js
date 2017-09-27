@@ -173,6 +173,12 @@ function runSchedule () {
 				sequence: '12h:front_path_lights'
 			},
 			{
+				label: 'Game Cabinet',
+				start: '2017-09-27 6:00 PM',
+				frequency: '1d',
+				sequence: '3h:game_cabinet'
+			},
+			{
 				label: 'Blinky',
 				start: '2017-09-27 4:00 PM',
 				frequency: '2m',
