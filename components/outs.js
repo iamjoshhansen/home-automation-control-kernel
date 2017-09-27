@@ -29,7 +29,7 @@ module.exports = class Outs extends Emitter {
 				this.trigger(`change:${id}`, is_active);
 			})
 			.on('change-reasons', (reasons) => {
-				console.log(`native outs noticed a change in ${id}'s reasons: [${reasons.length}] ${reasons}`);
+				// console.log(`native outs noticed a change in ${id}'s reasons: [${reasons.length}] ${reasons}`);
 				this.trigger(`change-reasons`, [id, reasons]);
 				this.trigger(`change-reasons:${id}`, [reasons]);
 			})

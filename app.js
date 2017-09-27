@@ -117,18 +117,12 @@ console.log('\n\n\n');
 /*	Bind out change to reported state in DB
 ------------------------------------------*/
 	outs
-		// .on('change-reasons', (id, reasons) => {
-		// 	console.log(`outs noticed a change in reasons for ${id}: ${reasons.join(', ')}`);
-		// 	db.set(id, {
-		// 		reasons_to_be_on: reasons
-		// 	});
-		// })
 		.on('add-reason', (id, reason) => {
-			console.log(`outs noticed a new reason for ${id} to be on: "${reason}"`);
+			// console.log(`outs noticed a new reason for ${id} to be on: "${reason}"`);
 			db.addToGroup(id, 'reasons_to_be_on', reason);
 		})
 		.on('remove-reason', (id, reason) => {
-			console.log(`outs noticed a removed reason for ${id} to be on: "${reason}"`);
+			// console.log(`outs noticed a removed reason for ${id} to be on: "${reason}"`);
 			db.removeFromGroup(id, 'reasons_to_be_on', reason);
 		});
 
@@ -147,44 +141,46 @@ function runSchedule () {
 
 	const backyard_sequence = '15m:sprinkler_back_near 5s 15m:sprinkler_back_far';
 
-	const sequences = [
-			{
+	const sequences = _.mapValues({
+			the_yard: {
 				label: 'The Yard',
 				start: '2017-09-19 5:00 AM',
 				frequency: '3d',
 				sequence: `${backyard_sequence} 5s 15m:sprinkler_front_near 5s 15m:sprinkler_front_far`,
 			},
-			{
+			front_drip: {
 				label: 'Front Drip',
 				start: '2017-09-17 6:00 AM',
 				frequency: '1d',
 				sequence: '10m:drip_front'
 			},
-			{
+			back_yard: {
 				label: 'Back Yard',
 				start: '2017-09-19 9:00 AM',
 				frequency: '2d',
 				sequence: backyard_sequence,
 			},
-			{
+			front_lights: {
 				label: 'Front Lights',
 				start: '2017-09-27 7:00 PM',
 				frequency: '1d',
 				sequence: '12h:front_path_lights'
 			},
-			{
+			game_cabinet: {
 				label: 'Game Cabinet',
 				start: '2017-09-27 6:00 PM',
 				frequency: '1d',
 				sequence: '3h:game_cabinet'
 			},
-			{
+			blinky: {
 				label: 'Blinky',
 				start: '2017-09-27 4:00 PM',
 				frequency: '2m',
 				sequence: '1m:green_led',
 			},
-		];
+		}, (obj) => {
+			return new RepeatingSequence(obj);
+		});
 
 
 	function bindSequenceToOuts (sequence) {
@@ -201,13 +197,13 @@ function runSchedule () {
 
 			if (old_state) {
 				const out = outs.get(old_state);
-				console.log(`\n\nremoving reason from ${old_state}: "${reason}"`);
+				// console.log(`\n\nremoving reason from ${old_state}: "${reason}"`);
 				out.removeReason(reason);
 			}
 
 			if (state) {
 				const out = outs.get(state);
-				console.log(`\n\nadding reason to ${state}: "${reason}"`);
+				// console.log(`\n\nadding reason to ${state}: "${reason}"`);
 				out.addReason(reason);
 			}
 		});
@@ -215,9 +211,27 @@ function runSchedule () {
 		sequence.activate();
 	}
 
+	sequences.front_lights
+		.on('activate', () => {
+			ping(`Path Lights: ON`);
+		})
+		.on('deactivate', () => {
+			ping(`Path Lights: OFF`);
+		});
+
+	sequences.the_yard
+		.on('activate', () => {
+			ping(`Watering: Everything`);
+		});
+
+	sequences.back_yard
+		.on('activate', () => {
+			ping(`Watering: Backyard`);
+		});
+
 
 	_.each(sequences, (sequence) => {
-		bindSequenceToOuts(new RepeatingSequence(sequence));
+		bindSequenceToOuts(sequence);
 	});
 }
 
