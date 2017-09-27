@@ -146,13 +146,12 @@ function runSchedule () {
 	console.log('Running Schedule');
 
 	const backyard_sequence = '15m:sprinkler_back_near 5s 15m:sprinkler_back_far';
-	const backyard_frequency = '1d';
 
 	const sequences = [
 			{
 				label: 'The Yard',
 				start: '2017-09-19 5:00 AM',
-				frequency: backyard_frequency,
+				frequency: '3d',
 				sequence: `${backyard_sequence} 5s 15m:sprinkler_front_near 5s 15m:sprinkler_front_far`,
 			},
 			{
@@ -163,8 +162,8 @@ function runSchedule () {
 			},
 			{
 				label: 'Back Yard',
-				start: '2017-09-19 1:00 PM',
-				frequency: backyard_frequency,
+				start: '2017-09-19 9:00 AM',
+				frequency: '2d',
 				sequence: backyard_sequence,
 			},
 			{
@@ -173,12 +172,12 @@ function runSchedule () {
 				frequency: '1d',
 				sequence: '12h:front_path_lights'
 			},
-			// {
-			// 	label: 'Blinky',
-			// 	start: '2017-09-21 8:08 PM',
-			// 	frequency: '2s',
-			// 	sequence: '1s:green_led',
-			// },
+			{
+				label: 'Blinky',
+				start: '2017-09-27 4:00 PM',
+				frequency: '2m',
+				sequence: '1m:green_led',
+			},
 		];
 
 
