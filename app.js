@@ -9,7 +9,9 @@ const Outs = require('./components/outs');
 const dateString = require('./components/date-string');
 const Metrics = require('./components/metrics');
 const Deferred = require('./components/deferred');
-const RemoteState = require('./components/remote-state');
+const ManualInput = require('./components/manual-input');
+const ActualState = require('./components/actual-state');
+const DB = require('./components/db');
 const RepeatingEvent = require('./components/evs/repeating-ev');
 const RepeatingSequence = require('./components/evs/repeating-sequence');
 const duration = require('./components/duration');
@@ -49,45 +51,87 @@ console.log('\n\n\n');
 
 /*	Declare Outs
 ------------------------------------------*/
-	const outs = new Outs(require('./data/outs.json'));
+	// const db = new DB('http://iamjoshhansen.com/home-automation-control-kernel/db', 'pins');
+	const db = new DB('http://localhost:8888/iamjoshhansen/home-automation-control-kernel/db', 'pins');
+	const outs = new Outs();
 
-	const max_id_lenth = _.max(_.map(outs.outs, (out, id) => {
-		return id.length;
-	}));
+	db.fetch()
+		.then((response) => {
+			_.each(response.data, (out, id) => {
+				outs.createOut(id, out);
+			});
 
-	console.log('Outs\n - ' + _.map(outs.outs, (out, id) => {
-		return out.pin.id + '\t' + _.padEnd(id, max_id_lenth) + '\t' + out.label;
-	}).join('\n - '));
-
-	/*	Reset
-	-------------------------------------*/
-		_.each(outs.outs, (out) => {
-			out.deactivate();
+			declareOuts();
+			resetOuts();
+			bindReasons();
+			runSchedule();
+		})
+		.catch((er) => {
+			console.log('Fetch for pins failed.');
+			console.log(`${db.endpoint}/?table=${db.table}`);
+			console.log(er);
 		});
 
 
-	/*	Write initial files
-	------------------------------------------*/
-		/* _.each(outs.outs, (out, id) => {
-			fs.writeFileSync(`./php/data/${id}.json`, JSON.stringify({
-				is_active: false,
-				label: out.label
-			}, null, 4));
-		}); */
+	function declareOuts () {
+		const max_id_lenth = _.max(_.map(outs.outs, (out, id) => {
+			return id.length;
+		}));
+
+		console.log('Outs\n - ' + _.map(outs.outs, (out, id) => {
+			return out.pin.id + '\t' + _.padEnd(id, max_id_lenth) + '\t' + out.label;
+		}).join('\n - '));
+	}
 
 
-/*	Remove State
+	function resetOuts () {
+		console.log('Reseting outs');
+		_.each(outs.outs, (out) => {
+			out.deactivate();
+		});
+	}
+
+
+	function bindReasons () {
+		console.log('Binding Reasons');
+
+		setInterval(() => {
+			db.fetch()
+				.then((response) => {
+					_.each(response.data, (pin_data, id) => {
+						const out = outs.get(id);
+						const reason = 'manual';
+
+						if (pin_data.manual_on) {
+							out.addReason(reason);
+						} else {
+							out.removeReason(reason);
+						}
+					});
+				});
+		}, 1000);
+	}
+
+
+
+/*	Bind out change to reported state in DB
 ------------------------------------------*/
-	const remote_state = new RemoteState('http://iamjoshhansen.com/home-automation-control-kernel/db/', 1000);
+	outs
+		// .on('change-reasons', (id, reasons) => {
+		// 	console.log(`outs noticed a change in reasons for ${id}: ${reasons.join(', ')}`);
+		// 	db.set(id, {
+		// 		reasons_to_be_on: reasons
+		// 	});
+		// })
+		.on('add-reason', (id, reason) => {
+			console.log(`outs noticed a new reason for ${id} to be on: "${reason}"`);
+			db.addToGroup(id, 'reasons_to_be_on', reason);
+		})
+		.on('remove-reason', (id, reason) => {
+			console.log(`outs noticed a removed reason for ${id} to be on: "${reason}"`);
+			db.removeFromGroup(id, 'reasons_to_be_on', reason);
+		});
 
-	remote_state.on('change', (id, is_active) => {
-		console.log('remote change: `' + id + '` to `' + is_active + '`');
-		outs.get(id).set(is_active);
-	});
-
-	// remote_state.on('fetch-duration', (duration) => {
-	// 	console.log(`fetch duration: ${duration}`);
-	// });
 
 
 /*	Set up notifications for all switches
@@ -98,137 +142,79 @@ console.log('\n\n\n');
 	// 	ping(`${state}: ${label}`);
 	// });
 
+function runSchedule () {
+	console.log('Running Schedule');
+
+	const backyard_sequence = '15m:sprinkler_back_near 5s 15m:sprinkler_back_far';
+	const backyard_frequency = '1d';
+
+	const sequences = [
+			{
+				label: 'The Yard',
+				start: '2017-09-19 5:00 AM',
+				frequency: backyard_frequency,
+				sequence: `${backyard_sequence} 5s 15m:sprinkler_front_near 5s 15m:sprinkler_front_far`,
+			},
+			{
+				label: 'Front Drip',
+				start: '2017-09-17 6:00 AM',
+				frequency: '1d',
+				sequence: '10m:drip_front'
+			},
+			{
+				label: 'Back Yard',
+				start: '2017-09-19 1:00 PM',
+				frequency: backyard_frequency,
+				sequence: backyard_sequence,
+			},
+			{
+				label: 'Front Lights',
+				start: '2017-09-27 7:00 PM',
+				frequency: '1d',
+				sequence: '12h:front_path_lights'
+			},
+			// {
+			// 	label: 'Blinky',
+			// 	start: '2017-09-21 8:08 PM',
+			// 	frequency: '2s',
+			// 	sequence: '1s:green_led',
+			// },
+		];
 
 
-/*	Repeating Event
-------------------------------------------*/
-	// const repeating_event = new RepeatingEvent({
-	// 	start: new Date().getTime() + 3000,
-	// 	duration: '1s',
-	// 	frequency: '10s',
-	// });
+	function bindSequenceToOuts (sequence) {
+		// sequence.on('activate', () => {
+		// 	ping(`Sequence: ${sequence.label}`);
+		// });
 
-	// repeating_event.on('change', (state) => {
-	// 	console.log(`repeating event change: ${state}`);
-	// });
-
-
-const backyard_sequence = '15m:sprinkler_back_near 5s 15m:sprinkler_back_far';
-const backyard_frequency = '1d';
-
-const sequences = [
-		{
-			label: 'Back Yard (morning)',
-			start: '2017-09-19 5:00 AM',
-			frequency: backyard_frequency,
-			sequence: backyard_sequence,
-		},
-		{
-			label: 'Back Yard (lunch)',
-			start: '2017-09-19 11:00 AM',
-			frequency: backyard_frequency,
-			sequence: backyard_sequence,
-		},
-		{
-			label: 'Back Yard (evening)',
-			start: '2017-09-19 4:00 PM',
-			frequency: backyard_frequency,
-			sequence: backyard_sequence,
-		},
-		{
-			label: 'Front Yard',
-			start: '2017-09-18 5:00 AM',
-			frequency: '3d',
-			sequence: '15m:sprinkler_front_near 5s 15m:sprinkler_front_far'
-		},
-		{
-			label: 'Front Drip',
-			start: '2017-09-17 6:00 AM',
-			frequency: '1d',
-			sequence: '10m:drip_front'
+		if (sequence.state) {
+			outs.get(sequence.state).set(true);
 		}
-	];
 
+		sequence.on('change', (state, old_state) => {
+			const reason = `sequence: ${sequence.label}`;
 
-function bindSequenceToOuts (sequence) {
-	sequence.on('activate', () => {
-		ping(`Sequence: ${sequence.label}`);
-	});
+			if (old_state) {
+				const out = outs.get(old_state);
+				console.log(`\n\nremoving reason from ${old_state}: "${reason}"`);
+				out.removeReason(reason);
+			}
 
-	if (sequence.state) {
-		outs.get(sequence.state).set(true);
+			if (state) {
+				const out = outs.get(state);
+				console.log(`\n\nadding reason to ${state}: "${reason}"`);
+				out.addReason(reason);
+			}
+		});
+
+		sequence.activate();
 	}
 
-	sequence.on('change', (state, old_state) => {
-		if (old_state) {
-			outs.get(old_state).set(false);
-		}
 
-		if (state) {
-			outs.get(state).set(true);
-		}
+	_.each(sequences, (sequence) => {
+		bindSequenceToOuts(new RepeatingSequence(sequence));
 	});
-
-	sequence.activate();
 }
-
-
-_.each(sequences, (sequence) => {
-	bindSequenceToOuts(new RepeatingSequence(sequence));
-});
-
-
-/*	Repeating Sequence
-------------------------------------------*/
-	// const repeating_sequence = new RepeatingSequence({
-	// 	start: new Date(new Date().getTime() + duration('10s')),
-	// 	frequency: '1d',
-	// 	sequence: '10s:sprinkler_back_near 5s 10s:sprinkler_back_far',
-	// });
-
-	// console.log(`repeating_sequence initial state: ${repeating_sequence.state}`);
-	// if (repeating_sequence.state) {
-	// 	outs.get(repeating_sequence.state).set(true);
-	// }
-
-	// repeating_sequence.on('change', (state, old_state) => {
-	// 	console.log(`repeating_sequence: ${old_state} -> ${state}`);
-	// 	if (old_state) {
-	// 		outs.get(old_state).set(false);
-	// 	}
-
-	// 	if (state) {
-	// 		outs.get(state).set(true);
-	// 	}
-	// });
-
-
-/*
-	let duration = require('./components/duration.js');
-
-	outs.get('sprinkler_front_near').activate();
-
-	setTimeout(() => {
-		outs.get('sprinkler_front_near').deactivate();
-	}, duration('9m55s'));
-
-	setTimeout(() => {
-		outs.get('sprinkler_front_far').activate();
-	}, duration('10m'));
-
-	setTimeout(() => {
-		outs.get('sprinkler_front_far').deactivate();
-	}, duration('19m55s'));
-
-	setTimeout(() => {
-		outs.get('drip_front').activate();
-	}, duration('20m'));
-
-	setTimeout(() => {
-		outs.get('drip_front').deactivate();
-	}, duration('30m'));
-*/
-
 
 
 

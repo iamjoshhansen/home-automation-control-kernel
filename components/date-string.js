@@ -13,5 +13,7 @@ module.exports = function dateString (date) {
 		':' +
 		_.padStart(date.getMinutes().toString(), 2, '0') +
 		':' +
-		_.padStart(date.getSeconds().toString(), 2, '0')
+		_.padStart(date.getSeconds().toString(), 2, '0') +
+		' : ' +
+		_.padStart(date.getMilliseconds().toString(), 4, '0')
 };

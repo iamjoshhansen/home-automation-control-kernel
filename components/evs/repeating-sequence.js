@@ -35,6 +35,15 @@ module.exports = class RepeatingSequence extends Ev {
 			}
 		});
 
+		const sequence_duration = _.sum(_.map(this.sequence, (seg) => {
+			return duration(seg.duration);
+		}));
+
+		Object.defineProperty(this, 'duration', {
+			enumerable: true,
+			value: sequence_duration,
+		});
+
 		//this.activate();
 	}
 
@@ -58,14 +67,11 @@ module.exports = class RepeatingSequence extends Ev {
 		}
 
 		var start = new Date(this.start),
-			total_duration = _.sum(_.map(this.sequence, (seg) => {
-				return duration(seg.duration);
-			})),
 			time_since_start = (now.getTime() - start.getTime()) % duration(this.frequency);
 
 		//console.log('time_since_start: ', time_since_start);
 
-		if (time_since_start < 0 || time_since_start > total_duration) {
+		if (time_since_start < 0 || time_since_start > this.duration) {
 			this.is_active = false;
 			this.state = false;
 		} else {

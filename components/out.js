@@ -10,10 +10,10 @@ module.exports = class Out extends Emitter {
 
 		super();
 
-		let self = this;
-		this.id    = id;
-		this.label = params.label;
-		this.pin   = new OutputPin(params.pin);
+		this.id      = id;
+		this.label   = params.label;
+		this.pin     = new OutputPin(params.pin);
+		this.reasons = [];
 	}
 
 	set (bool) {
@@ -42,6 +42,42 @@ module.exports = class Out extends Emitter {
 	toggle () {
 		this.set( ! this.get());
 	}
+
+	addReason (val) {
+		const index = this.reasons.findIndex((v) => {
+			return v === val;
+		});
+
+		if (index === -1) {
+			this.reasons.push(val);
+			this.trigger('change-reasons', [this.reasons]);
+			this.trigger('add-reason', val);
+			this.trigger(`add-reason:${val}`);
+			this.activate();
+		}
+
+		return this;
+	}
+
+	removeReason (val) {
+		const index = this.reasons.findIndex((v) => {
+			return v === val;
+		});
+
+		if (index > -1) {
+			this.reasons.splice(index, 1);
+			this.trigger('change-reasons', [this.reasons]);
+			this.trigger('remove-reason', val);
+			this.trigger(`remove-reason:${val}`);
+		}
+
+		if (this.reasons.length === 0) {
+			this.deactivate();
+		}
+
+		return this;
+	}
+
 
 	toJSON () {
 		return {

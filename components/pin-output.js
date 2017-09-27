@@ -4,12 +4,16 @@ var Emitter = require('./emitter.js'),
 	Gpio    = require( (process.platform == 'darwin') ? './onoff-fake.js' : 'onoff').Gpio;
 
 module.exports = class OutputPin {
-	constructor (number) {
+	constructor (pin_number) {
 
-		//console.log('Creating PIN: ', number);
+		// console.log('Creating PIN: ', pin_number);
 
-		this.io = new Gpio(number, 'out');
-		this.id = number;
+		if (! (typeof pin_number == "number")) {
+			throw new Error('Cannot construct OutputPin: number is undefined');
+		}
+
+		this.io = new Gpio(pin_number, 'out');
+		this.id = pin_number;
 		this.is_active = this.io.readSync() === 0;
 	}
 

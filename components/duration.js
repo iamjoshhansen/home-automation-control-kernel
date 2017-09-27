@@ -40,11 +40,13 @@ function simpleDuration (amount) {
 }
 
 duration.map = {
+	'y' : 1000 * 60 * 60 * 24 * 365,
 	'w' : 1000 * 60 * 60 * 24 * 7,
 	'd' : 1000 * 60 * 60 * 24,
 	'h' : 1000 * 60 * 60,
 	'm' : 1000 * 60,
-	's' : 1000
+	's' : 1000,
+	'i' : 1
 };
 
 module.exports = duration;

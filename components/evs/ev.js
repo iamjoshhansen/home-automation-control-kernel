@@ -23,6 +23,7 @@ class Ev extends Emitter {
 					let old_state = state;
 					state = val;
 					self.trigger('change', [state, old_state]);
+					self.trigger(state ? 'activate' : 'deactivate');
 				}
 			}
 		});

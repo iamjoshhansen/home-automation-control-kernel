@@ -6,7 +6,7 @@ var Emitter = require('./emitter'),
 	dateString = require('./date-string');
 
 
-module.exports = class RemoteState extends Emitter {
+module.exports = class ManualInput extends Emitter {
 
 	constructor (endpoint, interval) {
 
