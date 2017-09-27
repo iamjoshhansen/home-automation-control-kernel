@@ -51,8 +51,8 @@ console.log('\n\n\n');
 
 /*	Declare Outs
 ------------------------------------------*/
-	// const db = new DB('http://iamjoshhansen.com/home-automation-control-kernel/db', 'pins');
-	const db = new DB('http://localhost:8888/iamjoshhansen/home-automation-control-kernel/db', 'pins');
+	const db = new DB('http://iamjoshhansen.com/home-automation-control-kernel/db2', 'pins');
+	// const db = new DB('http://localhost:8888/iamjoshhansen/home-automation-control-kernel/db2', 'pins');
 	const outs = new Outs();
 
 	db.fetch()
