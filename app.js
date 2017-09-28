@@ -107,6 +107,8 @@ console.log('\n\n\n');
 						} else {
 							out.removeReason(reason);
 						}
+
+						out.manual_off = pin_data.manual_off;
 					});
 				});
 		}, 1000);

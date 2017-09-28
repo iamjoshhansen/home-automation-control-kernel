@@ -10,13 +10,42 @@ module.exports = class Out extends Emitter {
 
 		super();
 
-		this.id      = id;
-		this.label   = params.label;
-		this.pin     = new OutputPin(params.pin);
-		this.reasons = [];
+		this.id         = id;
+		this.label      = params.label;
+		this.pin        = new OutputPin(params.pin);
+		this.reasons    = [];
+
+		let manualOff = params.manual_off || false;
+		Object.defineProperty(this, 'manual_off', {
+			enumerable: true,
+			get: () => {
+				return manualOff;
+			},
+			set: (val) => {
+				if (manualOff !== val) {
+					manualOff = !! val;
+
+					if (this.reasons.length > 0) {
+						if (manualOff) {
+							// time to shut it down!
+							// console.log(`time to shut it down: ${this.label}`);
+							this.deactivate();
+						} else {
+							// It's been dead long enough!
+							// console.log(`time to bring it online: ${this.label}`);
+							this.activate();
+						}
+					}
+				}
+			}
+		});
 	}
 
 	set (bool) {
+		if (this.manual_off) {
+			bool = false;
+		}
+
 		bool = !! bool;
 		if (bool !== this.pin.is_active) {
 			this.pin.set(bool);
